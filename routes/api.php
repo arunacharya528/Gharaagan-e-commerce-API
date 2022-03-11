@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductInventoryController;
@@ -25,3 +26,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::resource('product', ProductController::class);
 Route::resource('productCategory', ProductCategoryController::class);
 Route::resource('productInventory', ProductInventoryController::class);
+Route::resource('discount', DiscountController::class);

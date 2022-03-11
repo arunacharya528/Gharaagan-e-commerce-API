@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Discount;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductInventory;
@@ -20,7 +21,7 @@ class DatabaseSeeder extends Seeder
 
         ProductCategory::factory(30)->create();
         ProductInventory::factory(30)->create();
+        Discount::factory(10)->create();
         Product::factory(30)->create();
-
     }
 }
