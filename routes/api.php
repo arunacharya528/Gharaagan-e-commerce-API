@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\OrderDetailController;
+use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductInventoryController;
@@ -38,3 +39,4 @@ Route::resource('userAddress', UserAddressController::class);
 Route::resource('shoppingSession', ShoppingSessionController::class);
 Route::resource('cartItem', CartItemController::class);
 Route::resource('orderDetail', OrderDetailController::class);
+Route::resource('orderItem', OrderItemController::class);

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\CartItem;
 use App\Models\Discount;
 use App\Models\OrderDetail;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductInventory;
@@ -34,5 +35,6 @@ class DatabaseSeeder extends Seeder
         ShoppingSession::factory(30)->create();
         CartItem::factory(30)->create();
         OrderDetail::factory(30)->create();
+        OrderItem::factory(30)->create();
     }
 }
