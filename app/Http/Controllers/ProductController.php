@@ -14,7 +14,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('category')->get();
+        $products = Product::with('category')->with('inventory')->get();
         return response()->json($products);
     }
 
@@ -48,7 +48,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product = Product::with('category')->find($product->id);
+        $product = Product::with('category')->with('inventory')->find($product->id);
         return response()->json($product);
     }
 
