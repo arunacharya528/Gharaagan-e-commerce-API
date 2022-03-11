@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
@@ -34,3 +35,4 @@ Route::resource('discount', DiscountController::class);
 Route::resource('user', UserController::class);
 Route::resource('userAddress', UserAddressController::class);
 Route::resource('shoppingSession', ShoppingSessionController::class);
+Route::resource('cartItem', CartItemController::class);
