@@ -6,6 +6,7 @@ use App\Models\Discount;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductInventory;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -23,5 +24,6 @@ class DatabaseSeeder extends Seeder
         ProductInventory::factory(30)->create();
         Discount::factory(10)->create();
         Product::factory(30)->create();
+        User::factory(10)->create();
     }
 }
