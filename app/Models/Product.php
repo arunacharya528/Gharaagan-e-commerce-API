@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'description', "SKU", "price", "category_id", "inventory_id"];
+    protected $fillable = ['name', 'description', "SKU", "price", "category_id", "inventory_id", 'discount_id'];
 
     public function category()
     {
@@ -18,5 +18,10 @@ class Product extends Model
     public function inventory()
     {
         return $this->belongsTo(ProductInventory::class, 'inventory_id');
+    }
+
+    public function discount()
+    {
+        return $this->belongsTo(Discount::class, 'discount_id');
     }
 }
