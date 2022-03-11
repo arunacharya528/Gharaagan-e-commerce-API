@@ -6,6 +6,7 @@ use App\Models\Discount;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductInventory;
+use App\Models\ShoppingSession;
 use App\Models\User;
 use App\Models\UserAddress;
 use Illuminate\Database\Seeder;
@@ -28,5 +29,6 @@ class DatabaseSeeder extends Seeder
         User::factory(10)->create();
 
         UserAddress::factory(20)->create();
+        ShoppingSession::factory(30)->create();
     }
 }
