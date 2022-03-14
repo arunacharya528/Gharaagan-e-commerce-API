@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Banner;
 use App\Models\CartItem;
 use App\Models\Discount;
 use App\Models\OrderDetail;
@@ -36,5 +37,7 @@ class DatabaseSeeder extends Seeder
         CartItem::factory(30)->create();
         OrderDetail::factory(30)->create();
         OrderItem::factory(30)->create();
+
+        Banner::factory(20)->create();
     }
 }

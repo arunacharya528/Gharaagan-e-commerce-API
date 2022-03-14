@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\OrderDetailController;
@@ -10,7 +11,6 @@ use App\Http\Controllers\ProductInventoryController;
 use App\Http\Controllers\ShoppingSessionController;
 use App\Http\Controllers\UserAddressController;
 use App\Http\Controllers\UserController;
-use App\Models\UserAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -40,3 +40,5 @@ Route::resource('shoppingSession', ShoppingSessionController::class);
 Route::resource('cartItem', CartItemController::class);
 Route::resource('orderDetail', OrderDetailController::class);
 Route::resource('orderItem', OrderItemController::class);
+
+Route::resource('banner', BannerController::class);
