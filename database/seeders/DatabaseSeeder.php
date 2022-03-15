@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductImage;
 use App\Models\ProductInventory;
+use App\Models\ProductRating;
 use App\Models\ShoppingSession;
 use App\Models\User;
 use App\Models\UserAddress;
@@ -41,5 +42,6 @@ class DatabaseSeeder extends Seeder
 
         Banner::factory(20)->create();
         ProductImage::factory(50)->create();
+        ProductRating::factory(100)->create();
     }
 }
