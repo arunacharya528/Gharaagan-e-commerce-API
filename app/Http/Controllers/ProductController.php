@@ -12,13 +12,16 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $itemsPerPage = (int) $request->input('item');
+        $pageNumber = (int) $request->input('page');
         $products = Product::with('category')
             ->with('discount')
             ->with('images')
             ->with('ratings')
-            ->get();
+            // ->get()
+            ->paginate($itemsPerPage, ['*'], 'page', $pageNumber);
 
         // gettting average rating of all products
         // loop with all components and append value to the respective sub-array
