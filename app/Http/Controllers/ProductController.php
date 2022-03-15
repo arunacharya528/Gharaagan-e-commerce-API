@@ -14,7 +14,19 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('category')->with('inventory')->with('discount')->with('images')->get();
+        $products = Product::with('category')
+            ->with('discount')
+            ->with('images')
+            ->with('ratings')
+            ->get();
+
+        // gettting average rating of all products
+        // loop with all components and append value to the respective sub-array
+        foreach ($products as $key => $product) {
+            $product['averageRating'] = $product->ratings->avg('rate');
+            // delete rating array to freeup space in frontend
+            unset($product['ratings']);
+        }
         return response()->json($products);
     }
 
@@ -48,7 +60,11 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product = Product::with('category')->with('inventory')->with('discount')->find($product->id);
+        $product = Product::with('category')
+            ->with('inventory')
+            ->with('discount')
+            ->with('ratings')
+            ->find($product->id);
         return response()->json($product);
     }
 
