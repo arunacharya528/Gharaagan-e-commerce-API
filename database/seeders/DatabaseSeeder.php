@@ -9,6 +9,7 @@ use App\Models\OrderDetail;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\ProductImage;
 use App\Models\ProductInventory;
 use App\Models\ShoppingSession;
 use App\Models\User;
@@ -39,5 +40,6 @@ class DatabaseSeeder extends Seeder
         OrderItem::factory(30)->create();
 
         Banner::factory(20)->create();
+        ProductImage::factory(50)->create();
     }
 }
