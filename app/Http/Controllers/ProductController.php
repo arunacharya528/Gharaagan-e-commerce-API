@@ -19,9 +19,14 @@ class ProductController extends Controller
         $products = Product::with('category')
             ->with('discount')
             ->with('images')
-            ->with('ratings')
-            // ->get()
-            ->paginate($itemsPerPage, ['*'], 'page', $pageNumber);
+            ->with('ratings');
+        if ($request->input('mostViewed') == 'true') {
+            $products = $products->orderBy('views', "DESC");
+        }
+        if ($request->input('latest') == 'true') {
+            $products = $products->orderBy('created_at', "DESC");
+        }
+        $products =  $products->paginate($itemsPerPage, ['*'], 'page', $pageNumber);
 
         // gettting average rating of all products
         // loop with all components and append value to the respective sub-array
@@ -30,6 +35,8 @@ class ProductController extends Controller
             // delete rating array to freeup space in frontend
             unset($product['ratings']);
         }
+
+        // dd($products);
         return response()->json($products);
     }
 
