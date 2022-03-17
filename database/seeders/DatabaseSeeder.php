@@ -28,7 +28,8 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        ProductCategory::factory(30)->create();
+        // ProductCategory::factory(30)->create();
+        $this->call(ProductCategorySeeder::class);
         ProductInventory::factory(30)->create();
         Discount::factory(10)->create();
         Product::factory(30)->create();

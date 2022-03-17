@@ -14,7 +14,26 @@ class ProductCategoryController extends Controller
      */
     public function index()
     {
-        $categories = ProductCategory::get();
+        // get nested categories with parent and child
+        $categories = ProductCategory::where(['is_parent' => true])->with('childCategories')->with('products')->get();
+        foreach ($categories as $category) {
+            // on each category get the available number of products
+            $category['number_of_product'] = $category->products->count();
+
+            // if is parent, proceed to get the children
+            if ($category->is_parent == true) {
+                foreach ($category->childCategories as $childCategory) {
+
+                    // on each child category get the available number of products
+                    $childCategory['number_of_product'] = $childCategory->products->count();
+
+                    //remove the related products to free up memory in frontend
+                    unset($childCategory->products);
+                }
+            }
+            //remove the related products to free up memory in frontend
+            unset($category->products);
+        }
         return response()->json($categories);
     }
 
