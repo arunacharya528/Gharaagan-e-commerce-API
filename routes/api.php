@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BannerController;
+use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\OrderDetailController;
@@ -40,5 +41,5 @@ Route::resource('shoppingSession', ShoppingSessionController::class);
 Route::resource('cartItem', CartItemController::class);
 Route::resource('orderDetail', OrderDetailController::class);
 Route::resource('orderItem', OrderItemController::class);
-
+Route::resource('brand', BrandController::class);
 Route::resource('banner', BannerController::class);

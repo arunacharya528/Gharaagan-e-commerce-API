@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Banner;
+use App\Models\Brand;
 use App\Models\CartItem;
 use App\Models\Discount;
 use App\Models\OrderDetail;
@@ -32,10 +33,12 @@ class DatabaseSeeder extends Seeder
         $this->call(ProductCategorySeeder::class);
         ProductInventory::factory(30)->create();
         Discount::factory(10)->create();
+        Brand::factory(10)->create();
         Product::factory(30)->create();
-        User::factory(10)->create();
 
+        User::factory(10)->create();
         UserAddress::factory(20)->create();
+
         ShoppingSession::factory(30)->create();
         CartItem::factory(30)->create();
         OrderDetail::factory(30)->create();
