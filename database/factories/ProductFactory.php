@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Brand;
 use App\Models\Discount;
 use App\Models\ProductCategory;
 use App\Models\ProductInventory;
@@ -24,8 +25,8 @@ class ProductFactory extends Factory
             'category_id' => $this->faker->randomElement(ProductCategory::pluck('id')),
             'inventory_id' => $this->faker->randomElement(ProductInventory::pluck('id')),
             'discount_id' => $this->faker->randomElement(Discount::pluck('id')),
-            'views' => rand(1000, 1500)
-
+            'views' => rand(1000, 1500),
+            'brand_id' => $this->faker->randomElement(Brand::pluck('id')),
         ];
     }
 }

@@ -19,7 +19,8 @@ class ProductController extends Controller
         $products = Product::with('category')
             ->with('discount')
             ->with('images')
-            ->with('ratings');
+            ->with('ratings')
+            ->with('brand');
         if ($request->input('mostViewed') == 'true') {
             $products = $products->orderBy('views', "DESC");
         }
@@ -74,6 +75,7 @@ class ProductController extends Controller
             ->with('inventory')
             ->with('discount')
             ->with('ratings')
+            ->with('brand')
             ->find($product->id);
         return response()->json($product);
     }

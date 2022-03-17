@@ -14,8 +14,12 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $brand = Brand::get();
-        return response()->json($brand);
+        $brands = Brand::with('products')->get();
+        foreach ($brands as $brand) {
+            $brand['number_of_products'] = $brand->products->count();
+            unset($brand->products);
+        }
+        return response()->json($brands);
     }
 
     /**

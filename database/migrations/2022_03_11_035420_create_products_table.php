@@ -25,6 +25,8 @@ class CreateProductsTable extends Migration
             $table->foreign('inventory_id')->references('id')->on('product_inventories')->onDelete('cascade');
             $table->unsignedBigInteger('discount_id')->nullable();
             $table->foreign('discount_id')->references('id')->on('discounts')->onDelete('set null');
+            $table->unsignedBigInteger('brand_id')->nullable();
+            $table->foreign('brand_id')->references('id')->on('brands')->onDelete('set null');
             $table->integer('views');
             $table->timestamps();
         });
