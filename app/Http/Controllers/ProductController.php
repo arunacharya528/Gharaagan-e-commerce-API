@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Brand;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -14,30 +15,54 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+        $brands = explode(",", $request->input('brands'));
+        $categories = explode(",", $request->input('categories'));
         $itemsPerPage = (int) $request->input('item');
         $pageNumber = (int) $request->input('page');
-        $products = Product::with('category')
-            ->with('discount')
-            ->with('images')
-            ->with('ratings')
-            ->with('brand');
-        if ($request->input('mostViewed') == 'true') {
-            $products = $products->orderBy('views', "DESC");
+
+        $products = Product::with([
+            'category',
+            'discount',
+            'images',
+            'ratings',
+            'brand'
+        ]);
+
+        if ($request->input('pmin') !== null) {
+            $products = $products->where('price', '>', (int)$request->input('pmin'));
         }
-        if ($request->input('latest') == 'true') {
-            $products = $products->orderBy('created_at', "DESC");
+
+        if ($request->input('pmax') !== null) {
+            $products = $products->where('price', '<', (int) $request->input('pmax'));
+        }
+
+        if ($request->input('brands') !== null) {
+            foreach ($brands as $brand) {
+                $products = $products->orWhere('brand_id', '=', (int) $brand);
+            }
+        }
+        if ($request->input('categories') !== null) {
+            foreach ($categories as $category) {
+                $products = $products->orWhere('category_id', '=', (int) $category);
+            }
+        }
+
+        if ($request->input('sort') == 'mostViewed') {
+            $products = $products->orderBy('views', "desc");
+        }
+        if ($request->input('sort') == 'latest') {
+            $products = $products->orderBy('created_at', "desc");
         }
         $products =  $products->paginate($itemsPerPage, ['*'], 'page', $pageNumber);
 
         // gettting average rating of all products
         // loop with all components and append value to the respective sub-array
-        foreach ($products as $key => $product) {
+        foreach ($products as $product) {
             $product['averageRating'] = $product->ratings->avg('rate');
             // delete rating array to freeup space in frontend
             unset($product['ratings']);
         }
 
-        // dd($products);
         return response()->json($products);
     }
 
