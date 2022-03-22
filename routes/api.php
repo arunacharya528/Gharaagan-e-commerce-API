@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CartItemController;
@@ -30,6 +31,37 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
+
+Route::group(['prefix' => 'auth', 'namespace' => 'Api'], function () {
+
+    Route::post('register',     [AuthController::class, 'register']);
+
+    /* ------------------------ For Personal Access Token ----------------------- */
+    Route::post('login',        [AuthController::class, 'login']);
+    /* -------------------------------------------------------------------------- */
+
+    /* ------------------------ For Password Grant Token ------------------------ */
+    Route::post('login_grant',  [AuthController::class, 'loginGrant']);
+    Route::post('refresh',      [AuthController::class, 'refreshToken']);
+    /* -------------------------------------------------------------------------- */
+
+    /* -------------------------------- Fallback -------------------------------- */
+    Route::any('{segment}', function () {
+        return response()->json([
+            'error' => 'Invalid url.'
+        ]);
+    })->where('segment', '.*');
+});
+
+Route::get('unauthorized', function () {
+    return response()->json([
+        'error' => 'Unauthorized.'
+    ], 401);
+})->name('unauthorized');
+
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('logout',    [AuthController::class, 'logout']);
+});
 
 Route::resource('product', ProductController::class);
 Route::resource('productCategory', ProductCategoryController::class);
