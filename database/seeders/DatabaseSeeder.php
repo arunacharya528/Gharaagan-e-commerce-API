@@ -1,21 +1,6 @@
 <?php
 
 namespace Database\Seeders;
-
-use App\Models\Banner;
-use App\Models\Brand;
-use App\Models\CartItem;
-use App\Models\Discount;
-use App\Models\OrderDetail;
-use App\Models\OrderItem;
-use App\Models\Product;
-use App\Models\ProductCategory;
-use App\Models\ProductImage;
-use App\Models\ProductInventory;
-use App\Models\ProductRating;
-use App\Models\ShoppingSession;
-use App\Models\User;
-use App\Models\UserAddress;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -27,25 +12,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-
-        // ProductCategory::factory(30)->create();
         $this->call(ProductCategorySeeder::class);
-        ProductInventory::factory(30)->create();
-        Discount::factory(10)->create();
-        Brand::factory(10)->create();
-        Product::factory(30)->create();
-
-        User::factory(10)->create();
-        UserAddress::factory(20)->create();
-
-        ShoppingSession::factory(30)->create();
-        CartItem::factory(30)->create();
-        OrderDetail::factory(30)->create();
-        OrderItem::factory(30)->create();
-
-        Banner::factory(20)->create();
-        ProductImage::factory(50)->create();
-        ProductRating::factory(100)->create();
+        $this->call(ProductInventorySeeder::class);
+        $this->call(DiscountSeeder::class);
+        $this->call(BrandSeeder::class);
+        $this->call(ProductSeeder::class);
+        $this->call(UserSeeder::class);
+        $this->call(UserAddressSeeder::class);
+        $this->call(ShoppingSessionSeeder::class);
+        $this->call(CartItemSeeder::class);
+        $this->call(OrderDetailSeeder::class);
+        $this->call(OrderItemSeeder::class);
+        $this->call(BannerSeeder::class);
+        $this->call(ProductImageSeeder::class);
+        $this->call(ProductRatingSeeder::class);
     }
 }
