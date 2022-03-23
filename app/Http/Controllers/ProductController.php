@@ -9,6 +9,14 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->middleware("auth:api")->only(["store", "update", 'destroy']);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

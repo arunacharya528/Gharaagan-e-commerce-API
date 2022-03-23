@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Laravel\Passport\Bridge\RefreshTokenRepository;
 
 class AuthController extends Controller
 {
@@ -54,7 +55,7 @@ class AuthController extends Controller
         }
 
         /* ------------ Create a new personal access token for the user. ------------ */
-        $tokenData = Auth::user()->createToken('MyApiToken');
+        $tokenData = Auth::user()->createToken('LoginToken');
         $token = $tokenData->accessToken;
         $expiration = $tokenData->token->expires_at->diffInSeconds(Carbon::now());
 
@@ -81,7 +82,7 @@ class AuthController extends Controller
 
         /* -------------------------- revoke refresh token -------------------------- */
         $refreshTokenRepository = app(RefreshTokenRepository::class);
-        $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($token->id);
+        $refreshTokenRepository->revokeRefreshToken($token->id);
 
         return response()->json(['message' => 'Logged out successfully']);
     }

@@ -45,6 +45,8 @@ Route::group(['prefix' => 'auth', 'namespace' => 'Api'], function () {
     Route::post('refresh',      [AuthController::class, 'refreshToken']);
     /* -------------------------------------------------------------------------- */
 
+    Route::get('logout',    [AuthController::class, 'logout'])->middleware('auth:api');
+
     /* -------------------------------- Fallback -------------------------------- */
     Route::any('{segment}', function () {
         return response()->json([
@@ -59,19 +61,20 @@ Route::get('unauthorized', function () {
     ], 401);
 })->name('unauthorized');
 
-Route::group(['middleware' => 'auth:api'], function () {
-    Route::get('logout',    [AuthController::class, 'logout']);
-});
-
+/*-------------------Added middleware in controller-------------------*/
 Route::resource('product', ProductController::class);
-Route::resource('productCategory', ProductCategoryController::class);
-Route::resource('productInventory', ProductInventoryController::class);
-Route::resource('discount', DiscountController::class);
-Route::resource('user', UserController::class);
-Route::resource('userAddress', UserAddressController::class);
-Route::resource('shoppingSession', ShoppingSessionController::class);
-Route::resource('cartItem', CartItemController::class);
-Route::resource('orderDetail', OrderDetailController::class);
-Route::resource('orderItem', OrderItemController::class);
-Route::resource('brand', BrandController::class);
 Route::resource('banner', BannerController::class);
+Route::resource('productCategory', ProductCategoryController::class);
+Route::resource('brand', BrandController::class);
+
+/*-------------------Explicit middleware in all-------------------*/
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::resource('productInventory', ProductInventoryController::class);
+    Route::resource('discount', DiscountController::class);
+    Route::resource('user', UserController::class);
+    Route::resource('userAddress', UserAddressController::class);
+    Route::resource('shoppingSession', ShoppingSessionController::class);
+    Route::resource('cartItem', CartItemController::class);
+    Route::resource('orderDetail', OrderDetailController::class);
+    Route::resource('orderItem', OrderItemController::class);
+});
