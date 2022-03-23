@@ -60,6 +60,7 @@ class AuthController extends Controller
         $expiration = $tokenData->token->expires_at->diffInSeconds(Carbon::now());
 
         return response()->json([
+            'user' => Auth::user(),
             'access_token' => $token,
             'token_type' => 'Bearer',
             'expires_in' => $expiration
