@@ -74,6 +74,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('user', UserController::class);
     Route::resource('userAddress', UserAddressController::class);
     Route::resource('shoppingSession', ShoppingSessionController::class);
+    Route::post('shoppingSession/{session_id}/createOrder', [ShoppingSessionController::class, 'createOrder']);
     Route::resource('cartItem', CartItemController::class);
     Route::delete('cartItem/deleteBySession/{session_id}', [CartItemController::class, 'deleteBySession']);
     Route::resource('orderDetail', OrderDetailController::class);
