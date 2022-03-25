@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ShoppingSession;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ShoppingSessionController extends Controller
 {
@@ -48,7 +49,11 @@ class ShoppingSessionController extends Controller
      */
     public function show(ShoppingSession $shoppingSession)
     {
-        $session = ShoppingSession::find($shoppingSession->id);
+        $session = ShoppingSession::with('cartItems.product.images')->find($shoppingSession->id);
+        // checks and sees if the given session belongs to authorised user
+        if ($session->user->id !== Auth::user()->id) {
+            return redirect()->route('unauthorized');
+        }
         return response()->json($session);
     }
 
