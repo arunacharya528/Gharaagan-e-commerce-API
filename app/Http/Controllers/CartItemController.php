@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\CartItem;
+use App\Models\ShoppingSession;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CartItemController extends Controller
 {
@@ -86,5 +89,15 @@ class CartItemController extends Controller
     public function destroy(CartItem $cartItem)
     {
         return CartItem::destroy($cartItem->id);
+    }
+
+    public function deleteBySession($session_id)
+    {
+        $session = ShoppingSession::find($session_id);
+        if ($session->user->id !== Auth::user()->id) {
+            return redirect()->route('unauthorized');
+        }
+        $cartItems = CartItem::where('session_id', $session_id)->delete();
+        return response()->json($cartItems);
     }
 }
