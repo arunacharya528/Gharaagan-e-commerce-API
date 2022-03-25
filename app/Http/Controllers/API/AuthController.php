@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\ShoppingSession;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -35,7 +36,8 @@ class AuthController extends Controller
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->save();
-        return response()->json(['data' => $user]);
+        $session = ShoppingSession::create(['user_id' => $user->id]);
+        return response()->json(['data' => $user, 'session_id' => $session->id]);
     }
 
     public function login(Request $request)
@@ -61,6 +63,7 @@ class AuthController extends Controller
 
         return response()->json([
             'user' => Auth::user(),
+            'session_id' => Auth::user()->shoppingSession ? Auth::user()->shoppingSession->id : null,
             'access_token' => $token,
             'token_type' => 'Bearer',
             'expires_in' => $expiration
