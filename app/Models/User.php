@@ -33,4 +33,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password'
     ];
+
+    public function shoppingSession()
+    {
+        return $this->hasOne(ShoppingSession::class, 'user_id');
+    }
 }
