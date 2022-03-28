@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\OrderDetail;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -116,8 +117,18 @@ class OrderDetailController extends Controller
         }
         DB::beginTransaction();
         try {
-            // delete ordering item
-            OrderItem::where(['order_id' => $order_id])->delete();
+            // getting all ordering items
+            $orderItems = OrderItem::where(['order_id' => $order_id])->get();
+
+            foreach ($orderItems as $item) {
+                // adding deleting order quantity into the quantity of product
+                $product = Product::find($item->product->id);
+                $existingQuantity = $product->inventory->quantity;
+                $product->inventory->quantity = $existingQuantity + $item->quantity;
+                $product->save();
+                $item->delete();
+            }
+
             // deleting order detail
             OrderDetail::destroy($order_id);
         } catch (\Throwable $th) {
