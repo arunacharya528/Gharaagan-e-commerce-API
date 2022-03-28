@@ -78,5 +78,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('cartItem', CartItemController::class);
     Route::delete('cartItem/deleteBySession/{session_id}', [CartItemController::class, 'deleteBySession']);
     Route::resource('orderDetail', OrderDetailController::class);
+    Route::get('orderDetail/byUser/{user_id}', [OrderDetailController::class, 'getByUser']);
+    Route::delete('orderDetail/{order_id}/cancel', [OrderDetailController::class, 'cancelOrder']);
+
     Route::resource('orderItem', OrderItemController::class);
 });
