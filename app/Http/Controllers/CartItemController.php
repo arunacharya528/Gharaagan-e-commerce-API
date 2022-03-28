@@ -39,6 +39,10 @@ class CartItemController extends Controller
      */
     public function store(Request $request)
     {
+        if (ShoppingSession::find($request->session_id)->user->id !== Auth::user()->id) {
+            return redirect()->route('unauthorized');
+        }
+
         $item = CartItem::create($request->all());
         return response()->json($item);
     }
