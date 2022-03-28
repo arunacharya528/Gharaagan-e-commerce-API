@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\OrderDetail;
+use App\Models\OrderItem;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderDetailController extends Controller
 {
@@ -86,5 +90,43 @@ class OrderDetailController extends Controller
     public function destroy(OrderDetail $orderDetail)
     {
         return OrderDetail::destroy($orderDetail->id);
+    }
+
+    /**
+     * Get order detail by user id
+     */
+    public function getByUser($user_id)
+    {
+        if (User::find($user_id)->id !== Auth::user()->id) {
+            return redirect()->route('unauthorized');
+        }
+
+        $orderDetail = User::with('orderDetails.orderItems.product')->find($user_id);
+
+        return response()->json($orderDetail);
+    }
+
+    /**
+     * Cancels order and all of its components
+     */
+    public function cancelOrder($order_id)
+    {
+        if (OrderDetail::find($order_id)->user->id !== Auth::user()->id) {
+            return redirect()->route('unauthorized');
+        }
+        DB::beginTransaction();
+        try {
+            // delete ordering item
+            OrderItem::where(['order_id' => $order_id])->delete();
+            // deleting order detail
+            OrderDetail::destroy($order_id);
+        } catch (\Throwable $th) {
+            error_log($th->getMessage());
+            DB::rollBack();
+            return response()->json(['message' => "There was problem creating order"], 409);
+        }
+        DB::commit();
+
+        return response()->json(['message' => "Order cancelled successfully"], 200);
     }
 }
