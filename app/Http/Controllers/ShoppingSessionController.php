@@ -143,10 +143,10 @@ class ShoppingSessionController extends Controller
         } catch (\Throwable $th) {
             error_log($th->getMessage());
             DB::rollBack();
-            return response()->json(['message' => "There was problem creating order"]);
+            return response()->json(['message' => "There was problem creating order"],409);
         }
         DB::commit();
 
-        return response()->json(['message' => "Order creates successfully"]);
+        return response()->json(['message' => "Order created successfully"], 200);
     }
 }

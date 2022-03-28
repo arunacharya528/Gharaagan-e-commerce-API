@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderItemController extends Controller
 {
@@ -85,6 +86,9 @@ class OrderItemController extends Controller
      */
     public function destroy(OrderItem $orderItem)
     {
+        if (OrderItem::find($orderItem->id)->orderDetail->user->id !== Auth::user()->id) {
+            return redirect()->route('unauthorized');
+        }
         return OrderItem::destroy($orderItem->id);
     }
 }
