@@ -77,6 +77,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('shoppingSession/{session_id}/createOrder', [ShoppingSessionController::class, 'createOrder']);
     Route::resource('cartItem', CartItemController::class);
     Route::delete('cartItem/deleteBySession/{session_id}', [CartItemController::class, 'deleteBySession']);
+    Route::get('cartItem/session/{session_id}/product/{product_id}', [CartItemController::class, 'getBySessionAndProduct']);
     Route::resource('orderDetail', OrderDetailController::class);
     Route::get('orderDetail/byUser/{user_id}', [OrderDetailController::class, 'getByUser']);
     Route::delete('orderDetail/{order_id}/cancel', [OrderDetailController::class, 'cancelOrder']);

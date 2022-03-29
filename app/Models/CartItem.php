@@ -14,4 +14,9 @@ class CartItem extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function shoppingSession()
+    {
+        return $this->belongsTo(ShoppingSession::class, 'session_id');
+    }
 }

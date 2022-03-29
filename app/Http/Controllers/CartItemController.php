@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CartItem;
+use App\Models\Product;
 use App\Models\ShoppingSession;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
@@ -39,12 +40,29 @@ class CartItemController extends Controller
      */
     public function store(Request $request)
     {
+
+        // dd(ShoppingSession::find($request->session_id)->user->id, Auth::user()->id);
         if (ShoppingSession::find($request->session_id)->user->id !== Auth::user()->id) {
             return redirect()->route('unauthorized');
         }
 
-        $item = CartItem::create($request->all());
-        return response()->json($item);
+        if (Product::find($request->product_id)->inventory->quantity < $request->quantity) {
+            return response()->json(['message' => 'Your quantity is more than existing quantity'], 409);
+        }
+
+        $item  = CartItem::where(['product_id' => $request->product_id, 'session_id' => $request->session_id]);
+        if ($item->exists()) {
+            $item = $item->first();
+            $item->quantity = $request->quantity;
+            $item->save();
+
+            return response()->json($item);
+        } else {
+
+            $item = CartItem::create($request->all());
+
+            return response()->json($item);
+        }
     }
 
     /**
@@ -92,6 +110,10 @@ class CartItemController extends Controller
      */
     public function destroy(CartItem $cartItem)
     {
+        if (CartItem::find($cartItem->id)->shoppingSession->user->id != Auth::user()->id) {
+            return redirect()->route('unauthorized');
+        }
+
         return CartItem::destroy($cartItem->id);
     }
 
@@ -103,5 +125,17 @@ class CartItemController extends Controller
         }
         $cartItems = CartItem::where('session_id', $session_id)->delete();
         return response()->json($cartItems);
+    }
+
+    public function getBySessionAndProduct($session_id, $product_id)
+    {
+        if (ShoppingSession::find($session_id)->user->id !== Auth::user()->id) {
+            return redirect()->route('unauthorized');
+        }
+
+        return CartItem::where([
+            'session_id' => $session_id,
+            'product_id' => $product_id
+        ])->first();
     }
 }
