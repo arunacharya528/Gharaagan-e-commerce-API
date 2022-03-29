@@ -108,6 +108,7 @@ class ProductController extends Controller
             ->with('inventory')
             ->with('discount')
             ->with('ratings')
+            ->with('images')
             ->with('brand')
             ->find($product->id);
         return response()->json($product);
