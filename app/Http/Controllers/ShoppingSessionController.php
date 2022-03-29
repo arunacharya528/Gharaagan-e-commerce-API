@@ -54,7 +54,13 @@ class ShoppingSessionController extends Controller
      */
     public function show(ShoppingSession $shoppingSession)
     {
-        $session = ShoppingSession::with('cartItems.product.images')->find($shoppingSession->id);
+        evaluate($shoppingSession->id);
+        $session = ShoppingSession::with('cartItems.product.images')
+            ->with('cartItems.product.discount')
+            ->with('cartItems.product.category')
+            ->with('cartItems.product.brand')
+            ->with('cartItems.product.inventory')
+            ->find($shoppingSession->id);
         // checks and sees if the given session belongs to authorised user
         if ($session->user->id !== Auth::user()->id) {
             return redirect()->route('unauthorized');
@@ -143,7 +149,7 @@ class ShoppingSessionController extends Controller
         } catch (\Throwable $th) {
             error_log($th->getMessage());
             DB::rollBack();
-            return response()->json(['message' => "There was problem creating order"],409);
+            return response()->json(['message' => "There was problem creating order"], 409);
         }
         DB::commit();
 
