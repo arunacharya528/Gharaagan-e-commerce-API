@@ -102,7 +102,13 @@ class OrderDetailController extends Controller
             return redirect()->route('unauthorized');
         }
 
-        $orderDetail = User::with('orderDetails.orderItems.product')->find($user_id);
+        $orderDetail = User::with('orderDetails.orderItems.product.inventory')
+            ->with('orderDetails.orderItems.product.discount')
+            ->with('orderDetails.orderItems.product.category')
+            ->with('orderDetails.orderItems.product.brand')
+            ->with('orderDetails.orderItems.product.images')
+
+            ->find($user_id);
 
         return response()->json($orderDetail);
     }
