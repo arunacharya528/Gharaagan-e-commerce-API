@@ -19,8 +19,6 @@ class UserAddressFactory extends Factory
             'address_line1' => $this->faker->address(),
             'address_line2' => $this->faker->address(),
             'city' => $this->faker->city(),
-            'postal_code' => rand(40000, 60000),
-            'country' => $this->faker->country(),
             'telephone' => $this->faker->phoneNumber(),
             'mobile' => $this->faker->phoneNumber()
         ];

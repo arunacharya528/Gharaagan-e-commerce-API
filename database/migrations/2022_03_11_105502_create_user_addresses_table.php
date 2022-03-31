@@ -20,8 +20,6 @@ class CreateUserAddressesTable extends Migration
             $table->string('address_line1');
             $table->string('address_line2');
             $table->string('city');
-            $table->string('postal_code');
-            $table->string('country');
             $table->string('telephone');
             $table->string('mobile');
             $table->timestamps();

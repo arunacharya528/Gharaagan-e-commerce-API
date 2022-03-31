@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class UserAddressController extends Controller
 {
@@ -72,6 +74,21 @@ class UserAddressController extends Controller
      */
     public function update(Request $request, UserAddress $userAddress)
     {
+        if (UserAddress::find($userAddress->id)->user->id !== Auth::user()->id) {
+            return redirect()->route('unauthorized');
+        }
+        $validator = Validator::make($request->all(), [
+            'address_line1' => 'required',
+            'address_line2' => 'required',
+            'city' => 'required',
+            'telephone' => 'required',
+            'mobile' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
         $userAddress = UserAddress::find($userAddress->id);
         $userAddress->update($request->all());
         return response()->json($userAddress);
