@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -48,7 +51,10 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $user = User::find($user->id);
+        if ($user->id !== Auth::user()->id) {
+            return redirect()->route('unauthorized');
+        }
+        $user = User::with('address')->where('id', $user->id)->first();
         return response()->json($user);
     }
 
@@ -72,8 +78,43 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        if ($user->id !== Auth::user()->id) {
+            return redirect()->route('unauthorized');
+        }
+
         $user = User::find($user->id);
-        $user->update($request->all());
+
+        $rule = [];
+
+        if ($request->first_name !== null || $request->last_name !== null || $request->contact !== null) {
+            $rule['first_name'] = 'required';
+            $rule['last_name'] = 'required';
+            $rule['contact'] = 'required';
+        }
+
+        if ($request->email !== null) {
+            $rule['email'] = 'email:rfc,dns|unique:users,email,' . $user->id;
+        }
+
+        if ($request->password !== null || $request->password_confirmation !== null) {
+            $rule['password'] = ['required', 'confirmed', Password::min(8)
+                ->letters()
+                ->mixedCase()
+                ->numbers()
+                ->symbols()
+                ->uncompromised()];
+        }
+
+        $validator = Validator::make($request->all(), $rule);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+        try {
+            $user->update($request->all());
+        } catch (\Throwable $th) {
+            return response()->json([['message' => 'Given fields must be filled']], 400);
+        }
         return response()->json($user);
     }
 
