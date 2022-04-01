@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductRating;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductRatingController extends Controller
 {
@@ -36,6 +37,9 @@ class ProductRatingController extends Controller
      */
     public function store(Request $request)
     {
+        if ($request->user_id !== Auth::user()->id) {
+            return redirect()->route("unauthorized");
+        }
         $rating = ProductRating::create($request->all());
         return response()->json($rating);
     }
