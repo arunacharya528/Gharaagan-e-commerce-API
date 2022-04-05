@@ -104,12 +104,14 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product = Product::with('category')
+        $product = Product::with('category.parent.childCategories')
             ->with('inventory')
             ->with('discount')
-            ->with('ratings')
+            ->with('ratings.user')
             ->with('images')
             ->with('brand')
+            ->with('questions.answers')
+            ->with('questions.user')
             ->find($product->id);
         return response()->json($product);
     }

@@ -24,4 +24,9 @@ class ProductCategory extends Model
     {
         return $this->category()->with('childCategories');
     }
+
+    public function parent()
+    {
+        return $this->belongsTo(ProductCategory::class, 'parent_id');
+    }
 }
