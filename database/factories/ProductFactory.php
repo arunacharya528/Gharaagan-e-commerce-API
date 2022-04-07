@@ -22,10 +22,10 @@ class ProductFactory extends Factory
             'description' => $this->faker->paragraph(),
             'summary' => $this->faker->sentence(),
             'SKU' => $this->faker->uuid(),
-            'price' => rand(1000, 2000),
+            // 'price' => rand(1000, 2000),
             'category_id' => $this->faker->randomElement(ProductCategory::pluck('id')),
             // 'inventory_id' => $this->faker->randomElement(ProductInventory::pluck('id')),
-            'discount_id' => $this->faker->randomElement(Discount::pluck('id')),
+            // 'discount_id' => $this->faker->randomElement(Discount::pluck('id')),
             'views' => rand(1000, 1500),
             'brand_id' => $this->faker->randomElement(Brand::pluck('id')),
         ];

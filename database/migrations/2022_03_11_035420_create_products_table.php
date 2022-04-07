@@ -19,13 +19,13 @@ class CreateProductsTable extends Migration
             $table->text('description');
             $table->text('summary');
             $table->string('SKU');
-            $table->integer('price');
+            // $table->integer('price');
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('product_categories')->onDelete('cascade');
             // $table->unsignedBigInteger('inventory_id');
             // $table->foreign('inventory_id')->references('id')->on('product_inventories')->onDelete('cascade');
-            $table->unsignedBigInteger('discount_id')->nullable();
-            $table->foreign('discount_id')->references('id')->on('discounts')->onDelete('set null');
+            // $table->unsignedBigInteger('discount_id')->nullable();
+            // $table->foreign('discount_id')->references('id')->on('discounts')->onDelete('set null');
             $table->unsignedBigInteger('brand_id')->nullable();
             $table->foreign('brand_id')->references('id')->on('brands')->onDelete('set null');
             $table->integer('views');

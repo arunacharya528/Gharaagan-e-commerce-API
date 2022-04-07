@@ -18,6 +18,9 @@ class CreateProductInventoriesTable extends Migration
             $table->integer('quantity');
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->unsignedBigInteger('discount_id')->nullable();
+            $table->foreign('discount_id')->references('id')->on('discounts')->onDelete('set null');
+            $table->double('price', 10, 2);
             $table->string('type');
             $table->timestamps();
         });

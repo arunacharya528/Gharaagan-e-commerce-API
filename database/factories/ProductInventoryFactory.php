@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Discount;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,7 +18,9 @@ class ProductInventoryFactory extends Factory
         return [
             'quantity' => rand(100, 200),
             'product_id' => $this->faker->randomElement(Product::pluck('id')),
-            'type' => $this->faker->randomElement($this->faker->words(5))
+            'discount_id' => $this->faker->randomElement(Discount::pluck('id')),
+            'type' => $this->faker->randomElement($this->faker->words(5)),
+            'price' => rand(1000, 2000),
         ];
     }
 }

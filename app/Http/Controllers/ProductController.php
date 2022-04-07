@@ -30,7 +30,7 @@ class ProductController extends Controller
 
         $products = Product::with([
             'category',
-            'discount',
+            // 'discount',
             'images',
             'ratings',
             'brand'
@@ -105,8 +105,8 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $product = Product::with('category.parent.childCategories')
-            ->with('inventories')
-            ->with('discount')
+            ->with('inventories.discount')
+            // ->with('discount')
             ->with('ratings.user')
             ->with('images')
             ->with('brand')
