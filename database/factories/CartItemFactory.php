@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Product;
+use App\Models\ProductInventory;
 use App\Models\ShoppingSession;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,8 +19,8 @@ class CartItemFactory extends Factory
         return [
             'session_id' => $this->faker->randomElement(ShoppingSession::pluck('id')),
             'product_id' => $this->faker->randomElement(Product::pluck('id')),
-            'quantity' => rand(20, 50)
-
+            'quantity' => rand(20, 50),
+            'inventory_id' => $this->faker->randomElement(ProductInventory::pluck('id')),
         ];
     }
 }

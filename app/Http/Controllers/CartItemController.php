@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CartItem;
 use App\Models\Product;
+use App\Models\ProductInventory;
 use App\Models\ShoppingSession;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
@@ -41,16 +42,15 @@ class CartItemController extends Controller
     public function store(Request $request)
     {
 
-        // dd(ShoppingSession::find($request->session_id)->user->id, Auth::user()->id);
         if (ShoppingSession::find($request->session_id)->user->id !== Auth::user()->id) {
             return redirect()->route('unauthorized');
         }
 
-        if (Product::find($request->product_id)->inventory->quantity < $request->quantity) {
-            return response()->json(['message' => 'Your quantity is more than existing quantity'], 409);
+        if (ProductInventory::find($request->inventory_id)->quantity < (int)$request->quantity) {
+            return response()->json(['error' => 'Your quantity is more than existing quantity'], 500);
         }
 
-        $item  = CartItem::where(['product_id' => $request->product_id, 'session_id' => $request->session_id]);
+        $item  = CartItem::where(['product_id' => $request->product_id, 'session_id' => $request->session_id, 'inventory_id' => $request->inventory_id]);
         if ($item->exists()) {
             $item = $item->first();
             $item->quantity = $request->quantity;
