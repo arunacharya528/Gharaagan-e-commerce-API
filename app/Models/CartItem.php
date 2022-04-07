@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class CartItem extends Model
 {
     use HasFactory;
-    protected $fillable = ['session_id', 'product_id', 'quantity','inventory_id'];
+    protected $fillable = ['session_id', 'product_id', 'quantity', 'inventory_id'];
 
     public function product()
     {
@@ -18,5 +18,10 @@ class CartItem extends Model
     public function shoppingSession()
     {
         return $this->belongsTo(ShoppingSession::class, 'session_id');
+    }
+
+    public function inventory()
+    {
+        return $this->belongsTo(ProductInventory::class, 'inventory_id');
     }
 }

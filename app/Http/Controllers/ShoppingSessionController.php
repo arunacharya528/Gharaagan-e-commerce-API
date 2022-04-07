@@ -56,10 +56,9 @@ class ShoppingSessionController extends Controller
     {
         evaluate($shoppingSession->id);
         $session = ShoppingSession::with('cartItems.product.images')
-            ->with('cartItems.product.discount')
+            ->with('cartItems.inventory.discount')
             ->with('cartItems.product.category')
             ->with('cartItems.product.brand')
-            ->with('cartItems.product.inventory')
             ->find($shoppingSession->id);
         // checks and sees if the given session belongs to authorised user
         if ($session->user->id !== Auth::user()->id) {
