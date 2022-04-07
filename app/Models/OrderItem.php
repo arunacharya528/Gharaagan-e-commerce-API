@@ -19,4 +19,9 @@ class OrderItem extends Model
     {
         return $this->belongsTo(OrderDetail::class, 'order_id');
     }
+
+    public function inventory()
+    {
+        return $this->belongsTo(ProductInventory::class, 'inventory_id');
+    }
 }

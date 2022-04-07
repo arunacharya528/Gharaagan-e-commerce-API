@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\OrderDetail;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\ProductInventory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -128,10 +129,10 @@ class OrderDetailController extends Controller
 
             foreach ($orderItems as $item) {
                 // adding deleting order quantity into the quantity of product
-                $product = Product::find($item->product->id);
-                $existingQuantity = $product->inventory->quantity;
-                $product->inventory->quantity = $existingQuantity + $item->quantity;
-                $product->save();
+                $inventory = ProductInventory::find($item->inventory->id);
+                $existingQuantity = $inventory->quantity;
+                $inventory->quantity = $existingQuantity + $item->quantity;
+                $inventory->save();
                 $item->delete();
             }
 
@@ -140,7 +141,7 @@ class OrderDetailController extends Controller
         } catch (\Throwable $th) {
             error_log($th->getMessage());
             DB::rollBack();
-            return response()->json(['message' => "There was problem creating order"], 409);
+            return response()->json(['message' => "There was problem cancelling order"], 500);
         }
         DB::commit();
 
