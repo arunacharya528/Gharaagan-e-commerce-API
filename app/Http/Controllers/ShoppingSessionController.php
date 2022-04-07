@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CartItem;
+use App\Models\Discount;
 use App\Models\OrderDetail;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -109,7 +110,7 @@ class ShoppingSessionController extends Controller
      * Create order with the session data
      */
 
-    public function createOrder($session_id)
+    public function createOrder($session_id, Request $request)
     {
         // checks and sees if the given session belongs to authorised user
         if (ShoppingSession::find($session_id)->user->id !== Auth::user()->id) {
@@ -123,10 +124,20 @@ class ShoppingSessionController extends Controller
 
             $session = ShoppingSession::with('cartItems')->find($session_id);
 
+            // find by discount name and apply discount
+            $discount = null;
+            if ($request->discountName !== null) {
+                $discount = Discount::where(['name' => $request->discountName])->first();
+            }
+
+            $discountedPrice = $request->discountName !== null ? $session->total - (0.01 * $discount->discount_percent * $session->total) : $session->total;
+
+
             // Create an order detail
             $order = OrderDetail::create([
                 'user_id' => $session->user->id,
-                'total' => $session->total
+                'total' => $discountedPrice,
+                'discount_id' => $request->discountName == null ? null : $discount->id
             ]);
 
             // for all cart item add them to order item following order detail
