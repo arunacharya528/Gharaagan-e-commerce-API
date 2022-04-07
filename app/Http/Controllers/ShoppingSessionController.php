@@ -6,6 +6,7 @@ use App\Models\CartItem;
 use App\Models\OrderDetail;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\ProductInventory;
 use App\Models\ShoppingSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -134,13 +135,14 @@ class ShoppingSessionController extends Controller
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item->product_id,
+                    'inventory_id' => $item->inventory_id,
                     'quantity' => $item->quantity
                 ]);
 
                 // updating quantity of product in inventory
-                $product = Product::find($item->product->id);
-                $product->inventory->quantity = $product->inventory->quantity - $item->quantity;
-                $product->save();
+                $inventory = ProductInventory::find($item->inventory_id);
+                $inventory->quantity = $inventory->quantity - $item->quantity;
+                $inventory->save();
             }
 
             // delete all cart items
@@ -148,10 +150,10 @@ class ShoppingSessionController extends Controller
         } catch (\Throwable $th) {
             error_log($th->getMessage());
             DB::rollBack();
-            return response()->json(['message' => "There was problem creating order"], 409);
+            return response()->json(['error' => "There was problem creating order"], 500);
         }
         DB::commit();
 
-        return response()->json(['message' => "Order created successfully"], 200);
+        return response()->json(['success' => "Order created successfully"], 200);
     }
 }
