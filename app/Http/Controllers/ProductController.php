@@ -105,7 +105,7 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $product = Product::with('category.parent.childCategories')
-            ->with('inventory')
+            ->with('inventories')
             ->with('discount')
             ->with('ratings.user')
             ->with('images')
