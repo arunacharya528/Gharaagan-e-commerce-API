@@ -68,6 +68,7 @@ Route::get('unauthorized', function () {
 /*-------------------Added middleware in controller-------------------*/
 Route::resource('product', ProductController::class);
 Route::resource('advertisement', AdvertisementController::class);
+Route::get('activeAdvertisement', [AdvertisementController::class, 'activeAdvertisement']);
 Route::resource('productCategory', ProductCategoryController::class);
 Route::resource('brand', BrandController::class);
 
