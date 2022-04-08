@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Banner;
+use App\Models\Advertisemnet;
 use Illuminate\Http\Request;
 
-class BannerController extends Controller
+class AdvertisementController extends Controller
 {
 
     /**
@@ -23,8 +23,8 @@ class BannerController extends Controller
      */
     public function index()
     {
-        $banner = Banner::get();
-        return response()->json($banner);
+        $advertisement = Advertisemnet::get();
+        return response()->json($advertisement);
     }
 
     /**
@@ -45,29 +45,29 @@ class BannerController extends Controller
      */
     public function store(Request $request)
     {
-        $banner = Banner::create($request->all());
-        return response()->json($banner);
+        $advertisement = Advertisemnet::create($request->all());
+        return response()->json($advertisement);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Banner  $banner
+     * @param  \App\Models\Advertisemnet  $advertisement
      * @return \Illuminate\Http\Response
      */
-    public function show(Banner $banner)
+    public function show(Advertisemnet $advertisement)
     {
-        $banner = Banner::find($banner->id);
-        return response()->json($banner);
+        $advertisement = Advertisemnet::find($advertisement->id);
+        return response()->json($advertisement);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Banner  $banner
+     * @param  \App\Models\Advertisemnet  $advertisement
      * @return \Illuminate\Http\Response
      */
-    public function edit(Banner $banner)
+    public function edit(Advertisemnet $advertisement)
     {
         //
     }
@@ -76,24 +76,24 @@ class BannerController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Banner  $banner
+     * @param  \App\Models\Advertisemnet  $advertisement
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Banner $banner)
+    public function update(Request $request, Advertisemnet $advertisement)
     {
-        $banner = Banner::find($banner->id);
-        $banner->update($request->all());
-        return response()->json($banner);
+        $advertisement = Advertisemnet::find($advertisement->id);
+        $advertisement->update($request->all());
+        return response()->json($advertisement);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Banner  $banner
+     * @param  \App\Models\Advertisement  $advertisement
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Banner $banner)
+    public function destroy(Advertisemnet $advertisement)
     {
-        return Banner::destroy($banner->id);
+        return Advertisemnet::destroy($advertisement->id);
     }
 }

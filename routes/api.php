@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\BannerController;
+use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\DiscountController;
@@ -66,7 +66,7 @@ Route::get('unauthorized', function () {
 
 /*-------------------Added middleware in controller-------------------*/
 Route::resource('product', ProductController::class);
-Route::resource('banner', BannerController::class);
+Route::resource('advertisement', AdvertisementController::class);
 Route::resource('productCategory', ProductCategoryController::class);
 Route::resource('brand', BrandController::class);
 

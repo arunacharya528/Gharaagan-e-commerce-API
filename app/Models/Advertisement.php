@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Banner extends Model
+class Advertisement extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'image', 'link', 'size', 'type', 'active'];
+    protected $fillable = ['name', 'summary', 'url_slug', 'page', 'type', 'active','active_from','active_to'];
 }
