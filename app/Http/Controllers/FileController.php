@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
@@ -36,7 +38,21 @@ class FileController extends Controller
      */
     public function store(Request $request)
     {
-        $file = File::create($request->all());
+        DB::beginTransaction();
+
+        try {
+            $status = Storage::disk('public')->put('', $request->file('file'));
+            $file = File::create([
+                'name' => $request->name,
+                'path' => $status
+            ]);
+        } catch (\Throwable $th) {
+            error_log($th->getMessage());
+            DB::rollBack();
+            return response()->json(['error' => "There was an error storing file"], 500);
+        }
+        DB::commit();
+
         return response()->json($file);
     }
 
@@ -85,6 +101,7 @@ class FileController extends Controller
      */
     public function destroy(File $file)
     {
+        unlink(storage_path('app/public/' . $file->path));
         return File::destroy($file->id);
     }
 }
