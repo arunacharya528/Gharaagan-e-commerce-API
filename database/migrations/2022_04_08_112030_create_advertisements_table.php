@@ -21,6 +21,8 @@ class CreateAdvertisementsTable extends Migration
             $table->string('page');
             $table->string('type');
             $table->boolean('active');
+            $table->unsignedBigInteger('file_id')->nullable();
+            $table->foreign('file_id')->references('id')->on('files')->onDelete('set null');
             $table->timestamp('active_from')->nullable();
             $table->timestamp('active_to')->nullable();
             $table->timestamps();

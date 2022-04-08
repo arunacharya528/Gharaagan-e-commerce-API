@@ -5,6 +5,7 @@ use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\ProductCategoryController;
@@ -89,3 +90,5 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('productRating', ProductRatingController::class);
     Route::resource('questionAnswer', QuestionAnswerController::class);
 });
+
+Route::resource('file', FileController::class);

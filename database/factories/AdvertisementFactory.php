@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\File;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AdvertisementFactory extends Factory
@@ -22,6 +23,7 @@ class AdvertisementFactory extends Factory
             'page' => $this->faker->randomElement(['home', 'detail', 'filter', 'profile']),
             'type' => $this->faker->randomElement(['banner', 'promotion', 'category']),
             'active' => $this->faker->randomElement([true, false]),
+            'file_id'=>$this->faker->randomElement(File::pluck('id')),
             'active_from' => date('Y-m-d H:i:s', $currentDate),
             'active_to' => date('Y-m-d H:i:s', $futureDate),
         ];
