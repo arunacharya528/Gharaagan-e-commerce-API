@@ -66,30 +66,32 @@ Route::get('unauthorized', function () {
 })->name('unauthorized');
 
 /*-------------------Added middleware in controller-------------------*/
+Route::get('product/all', [ProductController::class, 'getAll']);
 Route::resource('product', ProductController::class);
+
 Route::resource('advertisement', AdvertisementController::class);
 Route::get('activeAdvertisement', [AdvertisementController::class, 'activeAdvertisement']);
 Route::resource('productCategory', ProductCategoryController::class);
 Route::resource('brand', BrandController::class);
 
 /*-------------------Explicit middleware in all-------------------*/
-Route::group(['middleware' => 'auth:api'], function () {
-    Route::resource('productInventory', ProductInventoryController::class);
-    Route::resource('discount', DiscountController::class);
-    Route::resource('user', UserController::class);
-    Route::resource('userAddress', UserAddressController::class);
-    Route::resource('shoppingSession', ShoppingSessionController::class);
-    Route::post('shoppingSession/{session_id}/createOrder', [ShoppingSessionController::class, 'createOrder']);
-    Route::resource('cartItem', CartItemController::class);
-    Route::delete('cartItem/deleteBySession/{session_id}', [CartItemController::class, 'deleteBySession']);
-    Route::get('cartItem/session/{session_id}/product/{product_id}', [CartItemController::class, 'getBySessionAndProduct']);
-    Route::resource('orderDetail', OrderDetailController::class);
-    Route::get('orderDetail/byUser/{user_id}', [OrderDetailController::class, 'getByUser']);
-    Route::delete('orderDetail/{order_id}/cancel', [OrderDetailController::class, 'cancelOrder']);
-    Route::resource('orderItem', OrderItemController::class);
+// Route::group(['middleware' => 'auth:api'], function () {
+Route::resource('productInventory', ProductInventoryController::class);
+Route::resource('discount', DiscountController::class);
+Route::resource('user', UserController::class);
+Route::resource('userAddress', UserAddressController::class);
+Route::resource('shoppingSession', ShoppingSessionController::class);
+Route::post('shoppingSession/{session_id}/createOrder', [ShoppingSessionController::class, 'createOrder']);
+Route::resource('cartItem', CartItemController::class);
+Route::delete('cartItem/deleteBySession/{session_id}', [CartItemController::class, 'deleteBySession']);
+Route::get('cartItem/session/{session_id}/product/{product_id}', [CartItemController::class, 'getBySessionAndProduct']);
+Route::resource('orderDetail', OrderDetailController::class);
+Route::get('orderDetail/byUser/{user_id}', [OrderDetailController::class, 'getByUser']);
+Route::delete('orderDetail/{order_id}/cancel', [OrderDetailController::class, 'cancelOrder']);
+Route::resource('orderItem', OrderItemController::class);
 
-    Route::resource('productRating', ProductRatingController::class);
-    Route::resource('questionAnswer', QuestionAnswerController::class);
-});
+Route::resource('productRating', ProductRatingController::class);
+Route::resource('questionAnswer', QuestionAnswerController::class);
+// });
 
 Route::resource('file', FileController::class);
