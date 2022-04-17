@@ -101,6 +101,7 @@ class FileController extends Controller
      */
     public function destroy(File $file)
     {
+        dd("app/public/" . $file->path);
         unlink(storage_path('app/public/' . $file->path));
         return File::destroy($file->id);
     }

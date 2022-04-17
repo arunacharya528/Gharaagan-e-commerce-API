@@ -15,7 +15,9 @@ class FileFactory extends Factory
     {
         return [
             'name' => $this->faker->word(),
-            'path' => 'wallpaper.jpg'
+            'path' => $this->faker->randomElement([
+                'wallpaper1.jpg', 'wallpaper2.jpg', 'wallpaper3.jpg', 'wallpaper4.jpg', 'wallpaper5.jpg',
+            ])
         ];
     }
 }
