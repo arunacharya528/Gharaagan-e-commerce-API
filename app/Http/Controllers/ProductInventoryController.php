@@ -12,9 +12,15 @@ class ProductInventoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $inventories = ProductInventory::get();
+
+        if ($request->input('product_id') !== null) {
+            $inventories = ProductInventory::where('product_id', $request->input('product_id'))->get();
+        } else {
+            $inventories = ProductInventory::get();
+        }
+
         return response()->json($inventories);
     }
 
