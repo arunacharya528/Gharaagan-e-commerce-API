@@ -10,6 +10,7 @@ use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\ProductInventoryController;
 use App\Http\Controllers\ProductRatingController;
 use App\Http\Controllers\QuestionAnswerController;
@@ -92,6 +93,7 @@ Route::resource('orderItem', OrderItemController::class);
 
 Route::resource('productRating', ProductRatingController::class);
 Route::resource('questionAnswer', QuestionAnswerController::class);
+Route::resource('productImage', ProductImageController::class);
 // });
 
 Route::resource('file', FileController::class);

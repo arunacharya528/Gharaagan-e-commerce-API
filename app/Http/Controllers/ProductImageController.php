@@ -12,10 +12,15 @@ class ProductImageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $image = ProductImage::get();
-        return response()->json($image);
+        $images = ProductImage::with('file');
+        if ($request->input('product_id') !== null) {
+            $images = $images->where('product_id', $request->input('product_id'))->get();
+        } else {
+            $images = $images->get();
+        }
+        return response()->json($images);
     }
 
     /**
@@ -36,6 +41,7 @@ class ProductImageController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $image = ProductImage::create($request->all());
         return response()->json($image);
     }
