@@ -14,11 +14,11 @@ class ProductInventoryController extends Controller
      */
     public function index(Request $request)
     {
-
+        $inventories = ProductInventory::with('discount');
         if ($request->input('product_id') !== null) {
-            $inventories = ProductInventory::where('product_id', $request->input('product_id'))->get();
+            $inventories = $inventories->where('product_id', $request->input('product_id'))->get();
         } else {
-            $inventories = ProductInventory::get();
+            $inventories = $inventories->get();
         }
 
         return response()->json($inventories);
