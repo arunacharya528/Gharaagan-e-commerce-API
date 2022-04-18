@@ -8,10 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Brand extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'image'];
+    protected $fillable = ['name', 'image_url', 'file_id'];
 
     public function products()
     {
-        return $this->hasMany(Product::class, 'brand_id');
+        return $this->hasMany(Product::class);
+    }
+
+    public function file()
+    {
+        return $this->belongsTo(File::class, 'file_id');
     }
 }

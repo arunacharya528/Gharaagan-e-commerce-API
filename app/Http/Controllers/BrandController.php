@@ -12,7 +12,7 @@ class BrandController extends Controller
      */
     public function __construct()
     {
-        $this->middleware("auth:api")->only(["store", "update", 'destroy']);
+        // $this->middleware("auth:api")->only(["store", "update", 'destroy']);
     }
 
 
@@ -23,7 +23,7 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $brands = Brand::with('products')->get();
+        $brands = Brand::with(['file', 'products'])->get();
         foreach ($brands as $brand) {
             $brand['number_of_products'] = $brand->products->count();
             unset($brand->products);
