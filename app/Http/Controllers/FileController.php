@@ -16,7 +16,17 @@ class FileController extends Controller
      */
     public function index()
     {
-        $files = File::get();
+        $files = File::with(['productImages', 'brands', 'advertisements'])->get();
+
+        // getting count of usage of the respective images
+        foreach ($files as $file) {
+            $file['number_of_product_images'] = count($file->productImages);
+            $file['number_of_brands'] = count($file->brands);
+            $file['number_of_advertisements'] = count($file->advertisements);
+            unset($file->productImages);
+            unset($file->brands);
+            unset($file->advertisements);
+        }
         return response()->json($files);
     }
 
@@ -101,7 +111,7 @@ class FileController extends Controller
      */
     public function destroy(File $file)
     {
-        dd("app/public/" . $file->path);
+        // dd("app/public/" . $file->path);
         unlink(storage_path('app/public/' . $file->path));
         return File::destroy($file->id);
     }
