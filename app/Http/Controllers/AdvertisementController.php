@@ -13,7 +13,7 @@ class AdvertisementController extends Controller
      */
     public function __construct()
     {
-        $this->middleware("auth:api")->only(["store", "update", 'destroy']);
+        // $this->middleware("auth:api")->only(["store", "update", 'destroy']);
     }
 
     /**
@@ -24,9 +24,9 @@ class AdvertisementController extends Controller
     public function index()
     {
         $advertisements = Advertisement::with('file')->get();
-        foreach ($advertisements as $advertisement) {
-            $advertisement->file->full_path = env('APP_URL') . '/storage/' . $advertisement->file->path;
-        }
+        // foreach ($advertisements as $advertisement) {
+        //     $advertisement->file->full_path = env('APP_URL') . '/storage/' . $advertisement->file->path;
+        // }
         return response()->json($advertisements);
     }
 
