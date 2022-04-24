@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Discount;
 use App\Models\User;
+use App\Models\UserAddress;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OrderDetailFactory extends Factory
@@ -24,7 +25,8 @@ class OrderDetailFactory extends Factory
                 'Product being Shipped',
                 'Product Received'
             ]),
-            'discount_id' => $this->faker->randomElement([null, $this->faker->randomElement(Discount::pluck('id'))])
+            'discount_id' => $this->faker->randomElement([null, $this->faker->randomElement(Discount::pluck('id'))]),
+            'address_id' => $this->faker->randomElement(UserAddress::pluck('id'))
         ];
     }
 }

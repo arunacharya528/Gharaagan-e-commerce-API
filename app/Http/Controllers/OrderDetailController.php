@@ -20,7 +20,14 @@ class OrderDetailController extends Controller
      */
     public function index()
     {
-        $order = OrderDetail::get();
+        $order = OrderDetail::with([
+            'orderItems',
+            'orderItems.product',
+            'orderItems.inventory.discount',
+            'user',
+            'address',
+            'discount'
+        ])->get();
         return response()->json($order);
     }
 
@@ -54,8 +61,15 @@ class OrderDetailController extends Controller
      */
     public function show(OrderDetail $orderDetail)
     {
-        $session = OrderDetail::find($orderDetail->id);
-        return response()->json($session);
+        $order = OrderDetail::with([
+                'orderItems',
+                'orderItems.product',
+                'orderItems.inventory.discount',
+                'user',
+                'address',
+                'discount'
+            ])->find($orderDetail->id);
+        return response()->json($order);
     }
 
     /**
