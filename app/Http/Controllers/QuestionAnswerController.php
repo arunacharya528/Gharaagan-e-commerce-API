@@ -15,7 +15,13 @@ class QuestionAnswerController extends Controller
      */
     public function index()
     {
-        $rating = QuestionAnswer::get();
+        $rating = QuestionAnswer::with([
+            'answers',
+            'user',
+            'product'
+        ])
+            ->where(['parent_id' => null])
+            ->orderBy('updated_at', 'desc')->get();
         return response()->json($rating);
     }
 
@@ -37,9 +43,9 @@ class QuestionAnswerController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user_id !== Auth::user()->id) {
-            return redirect()->route("unauthorized");
-        }
+        // if ($request->user_id !== Auth::user()->id) {
+        //     return redirect()->route("unauthorized");
+        // }
         $rating = QuestionAnswer::create($request->all());
         return response()->json($rating);
     }
@@ -89,6 +95,8 @@ class QuestionAnswerController extends Controller
      */
     public function destroy(QuestionAnswer $questionAnswer)
     {
+        // Delete with respective parentid
+        QuestionAnswer::where(['parent_id' => $questionAnswer->id])->delete();
         return QuestionAnswer::destroy($questionAnswer->id);
     }
 }
