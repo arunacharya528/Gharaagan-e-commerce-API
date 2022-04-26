@@ -22,7 +22,10 @@ class ShoppingSessionController extends Controller
      */
     public function index()
     {
-        $session = ShoppingSession::get();
+        $session = ShoppingSession::with([
+            'cartItems.product',
+            'user'
+        ])->orderBy('updated_at', 'desc')->get();
         return response()->json($session);
     }
 
