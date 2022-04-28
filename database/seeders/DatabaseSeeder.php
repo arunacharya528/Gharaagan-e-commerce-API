@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(UserAddressSeeder::class);
 
-
         $this->call(ProductCategorySeeder::class);
         $this->call(DiscountSeeder::class);
 
@@ -26,7 +25,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(ProductSeeder::class);
         $this->call(ProductImageSeeder::class);
-        $this->call(ProductRatingSeeder::class);
         $this->call(QuestionAnswerSeeder::class);
 
         $this->call(ProductInventorySeeder::class);
@@ -34,5 +32,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CartItemSeeder::class);
         $this->call(OrderDetailSeeder::class);
         $this->call(OrderItemSeeder::class);
+
+        $this->call(ProductRatingSeeder::class);
     }
 }

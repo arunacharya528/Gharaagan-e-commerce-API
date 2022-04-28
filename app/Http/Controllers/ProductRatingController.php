@@ -15,7 +15,9 @@ class ProductRatingController extends Controller
      */
     public function index()
     {
-        $rating = ProductRating::get();
+        $rating = ProductRating::with([
+            'user', 'product', 'orderDetail'
+        ])->orderBy('created_at', 'desc')->get();
         return response()->json($rating);
     }
 
