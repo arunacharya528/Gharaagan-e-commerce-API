@@ -20,6 +20,7 @@ class UserFactory extends Factory
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'contact' => $this->faker->phoneNumber(),
+            'type' => $this->faker->randomElement([1, 2, 3])
         ];
     }
 }
