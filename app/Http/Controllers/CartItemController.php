@@ -110,9 +110,9 @@ class CartItemController extends Controller
      */
     public function destroy(CartItem $cartItem)
     {
-        if (CartItem::find($cartItem->id)->shoppingSession->user->id != Auth::user()->id) {
-            return redirect()->route('unauthorized');
-        }
+        // if (CartItem::find($cartItem->id)->shoppingSession->user->id != Auth::user()->id) {
+        //     return redirect()->route('unauthorized');
+        // }
 
         return CartItem::destroy($cartItem->id);
     }
