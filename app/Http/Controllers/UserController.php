@@ -51,10 +51,25 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        if ($user->id !== Auth::user()->id) {
-            return redirect()->route('unauthorized');
-        }
-        $user = User::with('address')->where('id', $user->id)->first();
+        // if ($user->id !== Auth::user()->id) {
+        //     return redirect()->route('unauthorized');
+        // }
+        $user = User::with([
+            'shoppingSession.cartItems.product',
+            'shoppingSession.user',
+            'orderDetails.orderItems.product',
+            'orderDetails.orderItems.inventory.discount',
+            'orderDetails.user',
+            'orderDetails.address',
+            'orderDetails.discount',
+            'productRatings.product',
+            'productRatings.user',
+            'productRatings.orderDetail',
+            'questionAnswers.answers',
+            'questionAnswers.user',
+            'questionAnswers.product'
+
+        ])->where('id', $user->id)->first();
         return response()->json($user);
     }
 
