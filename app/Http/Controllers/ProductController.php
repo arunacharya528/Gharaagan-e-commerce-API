@@ -132,13 +132,13 @@ class ProductController extends Controller
         // dd($request);
         $brands = explode(",", $request->input('brands'));
         $categories = explode(",", $request->input('categories'));
-        $itemsPerPage = (int) $request->input('item');
-        $pageNumber = (int) $request->input('page');
+        // $itemsPerPage = (int) $request->input('item');
+        // $pageNumber = (int) $request->input('page');
 
         $products = Product::with([
             'category',
-            // 'discount',
-            'images',
+            'inventories.discount',
+            'images.file',
             'ratings',
             'brand'
         ]);
@@ -172,7 +172,9 @@ class ProductController extends Controller
         if ($request->input('sort') == 'latest') {
             $products = $products->orderBy('created_at', "desc");
         }
-        $products =  $products->paginate($itemsPerPage, ['*'], 'page', $pageNumber);
+
+        $products = $products->get();
+        // $products =  $products->paginate($itemsPerPage, ['*'], 'page', $pageNumber);
 
         // gettting average rating of all products
         // loop with all components and append value to the respective sub-array
