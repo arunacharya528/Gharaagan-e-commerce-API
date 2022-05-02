@@ -70,8 +70,8 @@ Route::get('unauthorized', function () {
 Route::get('product/all', [ProductController::class, 'getAll']);
 Route::resource('product', ProductController::class);
 
+Route::get('advertisement/active', [AdvertisementController::class, 'activeAdvertisement']);
 Route::resource('advertisement', AdvertisementController::class);
-Route::get('activeAdvertisement', [AdvertisementController::class, 'activeAdvertisement']);
 Route::resource('productCategory', ProductCategoryController::class);
 Route::resource('brand', BrandController::class);
 
