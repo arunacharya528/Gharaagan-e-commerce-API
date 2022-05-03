@@ -61,7 +61,7 @@ class BrandController extends Controller
      */
     public function show(Brand $brand)
     {
-        $brand = Brand::find($brand->id);
+        $brand = Brand::with('file')->find($brand->id);
         return response()->json($brand);
     }
 
