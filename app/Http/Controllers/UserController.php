@@ -55,7 +55,8 @@ class UserController extends Controller
         //     return redirect()->route('unauthorized');
         // }
         $user = User::with([
-            'shoppingSession.cartItems.product',
+            'shoppingSession.cartItems.product.images.file',
+            'shoppingSession.cartItems.inventory.discount',
             'shoppingSession.user',
             'orderDetails.orderItems.product',
             'orderDetails.orderItems.inventory.discount',
@@ -142,5 +143,59 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         return User::destroy($user->id);
+    }
+
+
+    //===============================================
+    //
+    //      All methods to be required in client side
+    //
+    //===============================================
+
+    public function getSession(User $user)
+    {
+        $user =  User::with([
+            'shoppingSession.cartItems.product.images.file',
+            'shoppingSession.cartItems.inventory.discount'
+        ])->find($user->id);
+        return response()->json($user->shoppingSession);
+    }
+
+    public function getOrderDetail(User $user)
+    {
+        $user =  User::with([
+            'orderDetails.orderItems.product',
+            'orderDetails.orderItems.inventory.discount',
+            'orderDetails.user',
+            'orderDetails.address',
+            'orderDetails.discount',
+        ])->find($user->id);
+        return response()->json($user->orderDetails);
+    }
+
+
+    public function getRatings(User $user)
+    {
+        $user =  User::with([
+            'productRatings.product',
+        ])->find($user->id);
+        return response()->json($user->productRatings);
+    }
+
+    public function getQuestionAnswers(User $user)
+    {
+        $user =  User::with([
+            'questionAnswers.answers',
+            'questionAnswers.product',
+        ])->find($user->id);
+        return response()->json($user->questionAnswers);
+    }
+
+    public function getAddresses(User $user)
+    {
+        $user =  User::with([
+            'addresses'
+        ])->find($user->id);
+        return response()->json($user->addresses);
     }
 }

@@ -79,6 +79,14 @@ Route::resource('brand', BrandController::class);
 // Route::group(['middleware' => 'auth:api'], function () {
 Route::resource('productInventory', ProductInventoryController::class);
 Route::resource('discount', DiscountController::class);
+
+
+Route::get('user/{user}/session', [UserController::class, 'getSession']);
+Route::get('user/{user}/orders', [UserController::class, 'getOrderDetail']);
+Route::get('user/{user}/ratings', [UserController::class, 'getRatings']);
+Route::get('user/{user}/questionAnswers', [UserController::class, 'getQuestionAnswers']);
+Route::get('user/{user}/addresses', [UserController::class, 'getAddresses']);
+
 Route::resource('user', UserController::class);
 Route::resource('userAddress', UserAddressController::class);
 Route::resource('shoppingSession', ShoppingSessionController::class);
