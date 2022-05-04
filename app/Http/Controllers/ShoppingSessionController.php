@@ -60,15 +60,15 @@ class ShoppingSessionController extends Controller
     public function show(ShoppingSession $shoppingSession)
     {
         evaluate($shoppingSession->id);
-        $session = ShoppingSession::with('cartItems.product.images')
+        $session = ShoppingSession::with('cartItems.product.images.file')
             ->with('cartItems.inventory.discount')
             ->with('cartItems.product.category')
             ->with('cartItems.product.brand')
             ->find($shoppingSession->id);
         // checks and sees if the given session belongs to authorised user
-        if ($session->user->id !== Auth::user()->id) {
-            return redirect()->route('unauthorized');
-        }
+        // if ($session->user->id !== Auth::user()->id) {
+        //     return redirect()->route('unauthorized');
+        // }
         return response()->json($session);
     }
 
