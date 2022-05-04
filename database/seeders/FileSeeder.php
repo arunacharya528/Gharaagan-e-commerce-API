@@ -17,23 +17,23 @@ class FileSeeder extends Seeder
         $data = [
             [
                 'name' => 'image-1',
-                'path' => 'wallpaper1.jpg'
+                'path' => 'image (1).jpg'
             ],
             [
                 'name' => 'image-2',
-                'path' => 'wallpaper2.jpg'
+                'path' => 'image (2).jpg'
             ],
             [
                 'name' => 'image-3',
-                'path' => 'wallpaper3.jpg'
+                'path' => 'image (3).jpg'
             ],
             [
                 'name' => 'image-4',
-                'path' => 'wallpaper4.jpg'
+                'path' => 'image (4).jpg'
             ],
             [
                 'name' => 'image-5',
-                'path' => 'wallpaper5.jpg'
+                'path' => 'image (5).jpg'
             ]
         ];
         foreach ($data as $item) {
