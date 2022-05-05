@@ -165,6 +165,7 @@ class UserController extends Controller
     {
         $user =  User::with([
             'orderDetails.orderItems.product',
+            'orderDetails.orderItems.product.images.file',
             'orderDetails.orderItems.inventory.discount',
             'orderDetails.user',
             'orderDetails.address',

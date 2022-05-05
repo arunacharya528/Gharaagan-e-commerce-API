@@ -19,12 +19,7 @@ class OrderDetailFactory extends Factory
         return [
             'user_id' => $this->faker->randomElement(User::pluck('id')),
             'total' => rand(2000, 3000),
-            'status' => $this->faker->randomElement([
-                'Order Placed',
-                'Product collected for delivery',
-                'Product being Shipped',
-                'Product Received'
-            ]),
+            'status' => rand(1, 4),
             'discount_id' => $this->faker->randomElement([null, $this->faker->randomElement(Discount::pluck('id'))]),
             'address_id' => $this->faker->randomElement(UserAddress::pluck('id'))
         ];

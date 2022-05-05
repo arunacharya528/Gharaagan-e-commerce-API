@@ -18,7 +18,7 @@ class CreateOrderDetailsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->decimal('total');
-            $table->text('status')->default('Order Placed');
+            $table->integer('status')->default(1);
             $table->unsignedBigInteger('discount_id')->nullable();
             $table->foreign('discount_id')->references('id')->on('discounts')->onDelete('set null');
             $table->unsignedBigInteger('address_id')->nullable();
