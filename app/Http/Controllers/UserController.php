@@ -156,7 +156,8 @@ class UserController extends Controller
     {
         $user =  User::with([
             'shoppingSession.cartItems.product.images.file',
-            'shoppingSession.cartItems.inventory.discount'
+            'shoppingSession.cartItems.inventory.discount',
+            'shoppingSession.cartItems.product.category'
         ])->find($user->id);
         return response()->json($user->shoppingSession);
     }

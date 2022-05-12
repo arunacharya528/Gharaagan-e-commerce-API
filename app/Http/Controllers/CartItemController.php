@@ -42,27 +42,23 @@ class CartItemController extends Controller
     public function store(Request $request)
     {
 
-        if (ShoppingSession::find($request->session_id)->user->id !== Auth::user()->id) {
-            return redirect()->route('unauthorized');
-        }
+        // if (ShoppingSession::find($request->session_id)->user->id !== Auth::user()->id) {
+        //     return redirect()->route('unauthorized');
+        // }
 
-        if (ProductInventory::find($request->inventory_id)->quantity < (int)$request->quantity) {
-            return response()->json(['error' => 'Your quantity is more than existing quantity'], 500);
-        }
+        // if (ProductInventory::find($request->inventory_id)->quantity < (int)$request->quantity) {
+        //     return response()->json(['error' => 'Your quantity is more than existing quantity'], 500);
+        // }
 
         $item  = CartItem::where(['product_id' => $request->product_id, 'session_id' => $request->session_id, 'inventory_id' => $request->inventory_id]);
         if ($item->exists()) {
             $item = $item->first();
-            $item->quantity = $request->quantity;
+            $item->quantity = $request->quantity +  $item->quantity;
             $item->save();
-
-            return response()->json($item);
         } else {
-
             $item = CartItem::create($request->all());
-
-            return response()->json($item);
         }
+        return response()->json($item);
     }
 
     /**

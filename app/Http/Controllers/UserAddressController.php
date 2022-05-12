@@ -74,9 +74,9 @@ class UserAddressController extends Controller
      */
     public function update(Request $request, UserAddress $userAddress)
     {
-        if (UserAddress::find($userAddress->id)->user->id !== Auth::user()->id) {
-            return redirect()->route('unauthorized');
-        }
+        // if (UserAddress::find($userAddress->id)->user->id !== Auth::user()->id) {
+        //     return redirect()->route('unauthorized');
+        // }
         $validator = Validator::make($request->all(), [
             'address_line1' => 'required',
             'address_line2' => 'required',
