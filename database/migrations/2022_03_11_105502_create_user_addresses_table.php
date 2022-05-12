@@ -19,7 +19,8 @@ class CreateUserAddressesTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('address_line1');
             $table->string('address_line2');
-            $table->string('city');
+            $table->unsignedBigInteger('delivery_id');
+            $table->foreign('delivery_id')->references('id')->on('deliveries')->onDelete('cascade');
             $table->string('telephone');
             $table->string('mobile');
             $table->timestamps();

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Delivery;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,7 +19,7 @@ class UserAddressFactory extends Factory
             'user_id' => $this->faker->randomElement(User::pluck('id')),
             'address_line1' => $this->faker->address(),
             'address_line2' => $this->faker->address(),
-            'city' => $this->faker->city(),
+            'delivery_id' => $this->faker->randomElement(Delivery::pluck('id')),
             'telephone' => $this->faker->phoneNumber(),
             'mobile' => $this->faker->phoneNumber()
         ];

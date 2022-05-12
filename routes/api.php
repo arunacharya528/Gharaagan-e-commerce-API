@@ -4,6 +4,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CartItemController;
+use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\OrderDetailController;
@@ -102,6 +103,8 @@ Route::resource('orderItem', OrderItemController::class);
 Route::resource('productRating', ProductRatingController::class);
 Route::resource('questionAnswer', QuestionAnswerController::class);
 Route::resource('productImage', ProductImageController::class);
+Route::resource('delivery', DeliveryController::class);
+
 // });
 
 Route::resource('file', FileController::class);
