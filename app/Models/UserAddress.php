@@ -14,4 +14,9 @@ class UserAddress extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function delivery()
+    {
+        return $this->belongsTo(Delivery::class, 'delivery_id');
+    }
 }

@@ -80,7 +80,7 @@ class UserAddressController extends Controller
         $validator = Validator::make($request->all(), [
             'address_line1' => 'required',
             'address_line2' => 'required',
-            'city' => 'required',
+            'delivery_id' => 'required',
             'telephone' => 'required',
             'mobile' => 'required',
         ]);

@@ -196,7 +196,7 @@ class UserController extends Controller
     public function getAddresses(User $user)
     {
         $user =  User::with([
-            'addresses'
+            'addresses.delivery'
         ])->find($user->id);
         return response()->json($user->addresses);
     }
