@@ -79,6 +79,8 @@ Route::resource('brand', BrandController::class);
 /*-------------------Explicit middleware in all-------------------*/
 // Route::group(['middleware' => 'auth:api'], function () {
 Route::resource('productInventory', ProductInventoryController::class);
+
+Route::get('discount/{discountName}/find', [DiscountController::class, 'findDiscount']);
 Route::resource('discount', DiscountController::class);
 
 

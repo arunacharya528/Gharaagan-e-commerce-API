@@ -87,4 +87,16 @@ class DiscountController extends Controller
     {
         return Discount::destroy($discount->id);
     }
+
+
+    public function findDiscount($discountName)
+    {
+        // dd($discount);
+        $discountByName = Discount::where(['name' => $discountName]);
+        if ($discountByName->exists()) {
+            return response()->json($discountByName->first());
+        } else {
+            return response()->json([], 404);
+        }
+    }
 }
