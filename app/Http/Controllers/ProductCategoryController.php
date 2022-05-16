@@ -26,19 +26,21 @@ class ProductCategoryController extends Controller
         $categories = ProductCategory::where(['is_parent' => true])->with('childCategories')->with('products')->get();
         foreach ($categories as $category) {
             // on each category get the available number of products
-            $category['number_of_product'] = $category->products->count();
-
+            $totalProducts = 0;
             // if is parent, proceed to get the children
             if ($category->is_parent == true) {
                 foreach ($category->childCategories as $childCategory) {
 
+                    $numberOfProducts = $childCategory->products->count();
                     // on each child category get the available number of products
-                    $childCategory['number_of_product'] = $childCategory->products->count();
+                    $childCategory['number_of_product'] = $numberOfProducts;
+                    $totalProducts += $numberOfProducts;
 
                     //remove the related products to free up memory in frontend
                     unset($childCategory->products);
                 }
             }
+            $category['number_of_product'] = $totalProducts;
             //remove the related products to free up memory in frontend
             unset($category->products);
         }
