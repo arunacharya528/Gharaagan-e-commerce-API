@@ -200,4 +200,21 @@ class UserController extends Controller
         ])->find($user->id);
         return response()->json($user->addresses);
     }
+
+    public function getWishList(User $user)
+    {
+        $user =  User::with([
+            'wishlist.product.category',
+            'wishlist.product.inventories.discount',
+            'wishlist.product.images.file',
+            'wishlist.product.ratings',
+            'wishlist.product.brand'
+        ])->find($user->id);
+
+        foreach ($user->wishlist as $wish) {
+            $wish->product['averageRating'] = $wish->product->ratings->avg('rate');
+            unset($wish->product['ratings']);
+        }
+        return response()->json($user->wishlist);
+    }
 }
