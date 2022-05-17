@@ -85,4 +85,28 @@ class WishlistController extends Controller
     {
         return Wishlist::destroy($wishlist->id);
     }
+
+    public function wishListExists(Request $request)
+    {
+        $query = [];
+        $product_id = $request->input('product_id');
+        if ($product_id !== null) {
+            $query['product_id'] = $product_id;
+        } else {
+            return response()->json('Missing product id', 400);
+        }
+        $user_id = $request->input('user_id');
+        if ($user_id !== null) {
+            $query['user_id'] = $user_id;
+        } else {
+            return response()->json('Missing user id', 400);
+        }
+
+        $wishlist = Wishlist::where($query);
+        if ($wishlist->exists()) {
+            return response()->json($wishlist->first());
+        } else {
+            return response()->json('Does not exist', 204);
+        }
+    }
 }

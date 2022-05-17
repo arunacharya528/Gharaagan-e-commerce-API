@@ -114,5 +114,5 @@ Route::resource('delivery', DeliveryController::class);
 
 Route::resource('file', FileController::class);
 
+Route::get('wishlist/exists/', [WishlistController::class, 'wishListExists']);
 Route::resource('wishlist', WishlistController::class);
-
