@@ -36,5 +36,6 @@ class DatabaseSeeder extends Seeder
         $this->call(OrderItemSeeder::class);
 
         $this->call(ProductRatingSeeder::class);
+        $this->call(WishlistSeeder::class);
     }
 }

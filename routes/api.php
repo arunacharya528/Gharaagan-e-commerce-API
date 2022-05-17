@@ -18,6 +18,7 @@ use App\Http\Controllers\QuestionAnswerController;
 use App\Http\Controllers\ShoppingSessionController;
 use App\Http\Controllers\UserAddressController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WishlistController;
 use App\Models\ProductRating;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -110,3 +111,6 @@ Route::resource('delivery', DeliveryController::class);
 // });
 
 Route::resource('file', FileController::class);
+
+Route::resource('wishlist', WishlistController::class);
+
