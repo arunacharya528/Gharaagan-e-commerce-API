@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use App\Models\Product;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -129,62 +130,104 @@ class ProductController extends Controller
 
     public function getAll(Request $request)
     {
-        // dd($request);
-        $brands = explode(",", $request->input('brands'));
-        $categories = explode(",", $request->input('categories'));
-        // $itemsPerPage = (int) $request->input('item');
-        // $pageNumber = (int) $request->input('page');
 
-        $products = Product::with([
+
+        $mode = $request->input('mode');
+        $order = $request->input('orderBy') === 'desc' ? 'desc' : 'asc';
+        $withArray = [
             'category',
             'inventories.discount',
             'images.file',
-            'ratings',
             'brand'
-        ]);
+        ];
 
-        if ($request->input('pmin') !== null) {
-            $products = $products->where(
-                'price',
-                '>',
-                (int)$request->input('pmin')
-            );
-        }
+        $sortByPrice = function ($instance) use ($request) {
+            return $instance = $instance->with(['inventories' => function ($query) use ($request) {
+                $data = $query;
 
-        if ($request->input('pmax') !== null) {
-            $products = $products->where('price', '<', (int) $request->input('pmax'));
-        }
+                if ($request->exists('pmin')) {
+                    $data = $data->where('price', '>=', (int) $request->input('pmin'));
+                }
 
-        if ($request->input('brands') !== null) {
-            foreach ($brands as $brand) {
-                $products = $products->orWhere('brand_id', '=', (int) $brand);
+                if ($request->exists('pmax')) {
+                    $data = $data->where('price', '<=', (int) $request->input('pmax'));
+                }
+
+                $data->orderBy('price', 'desc');
+
+                return $data;
+            }]);
+        };
+
+        if ($mode === 'related') {
+            // get related product where parent category id is same
+            if (!$request->exists('product_id')) {
+                return response()->json(['include product_id'], 500);
             }
-        }
-        if ($request->input('categories') !== null) {
-            foreach ($categories as $category) {
-                $products = $products->orWhere('category_id', '=', (int) $category);
+            $categories = Product::where('id', $request->input('product_id'))->with(
+                [
+                    'category.parent.category'
+                ]
+            )->first()->category->parent->category->pluck('id');
+
+            $products = Product::whereIn('category_id', $categories->toArray())->with($withArray);
+            $products = $sortByPrice($products);
+            $products = $products->withAvg('ratings', 'rate')->orderBy('ratings_avg_rate', 'desc');
+            $this->allProducts = $products->get();
+        } else {
+            $products = new Product();
+
+            $products = $products->with($withArray);
+            $products = $products->withAvg('ratings', 'rate');
+
+
+            // for sorting by price
+            $products = $sortByPrice($products);
+
+            // filter by name
+            if ($request->exists('name')) {
+                $products = $products->where('name', 'like', "%" . $request->input('name') . "%");
             }
+
+            // sort by brand
+            if ($request->exists('brands')) {
+                $brands = explode(",", $request->input('brands'));
+                foreach ($brands as $brand) {
+                    $products = $products->orWhere('brand_id', '=', (int) $brand);
+                }
+            }
+
+            // sort by category
+            if ($request->exists('categories')) {
+                $categories = explode(",", $request->input('categories'));
+                foreach ($categories as $category) {
+                    $products = $products->orWhere('category_id', '=', (int) $category);
+                }
+            }
+
+            // sort by latest
+            if ($request->input('sort') === 'latest') {
+                $products = $products->orderBy('created_at', $order);
+            }
+
+            // sort by the product that has most ratings
+            if ($request->input('sort') === 'controversial') {
+                $products = $products->withCount('ratings')->orderBy('ratings_count', $order);
+            }
+
+            //sort by product that is most added to the wishlist
+            if ($request->input('sort') === 'popular') {
+                $products = $products->withCount('wishList')->orderBy('wish_list_count', $order);
+            }
+
+            // sort by average rating of the product
+            if ($request->input('sort') === 'rating') {
+                $products->orderBy('ratings_avg_rate', $order);
+            }
+
+            $this->allProducts = $products->get();
         }
 
-        if ($request->input('sort') == 'mostViewed') {
-            $products = $products->orderBy('views', "desc");
-        }
-        if ($request->input('sort') == 'latest') {
-            $products = $products->orderBy('created_at', "desc");
-        }
-
-        $products = $products->get();
-        // $products =  $products->paginate($itemsPerPage, ['*'], 'page', $pageNumber);
-
-        // gettting average rating of all products
-        // loop with all components and append value to the respective sub-array
-        foreach ($products as $product) {
-            $product['averageRating'] = $product->ratings->avg('rate');
-            // delete rating array to freeup space in frontend
-            unset($product['ratings']);
-        }
-
-        // return $products;
-        return response()->json($products);
+        return response()->json($this->allProducts);
     }
 }

@@ -19,7 +19,7 @@ class ProductCategorySeeder extends Seeder
                 'is_parent' => true
             ]);
 
-            ProductCategory::factory(30)->create([
+            ProductCategory::factory(10)->create([
                 'parent_id' => $category->id,
                 'is_parent' => false
             ]);

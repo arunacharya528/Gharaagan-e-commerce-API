@@ -39,4 +39,9 @@ class Product extends Model
     {
         return $this->hasMany(QuestionAnswer::class);
     }
+
+    public function wishList()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
 }
