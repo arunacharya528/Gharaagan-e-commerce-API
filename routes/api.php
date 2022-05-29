@@ -100,11 +100,14 @@ Route::post('shoppingSession/{session_id}/createOrder', [ShoppingSessionControll
 Route::delete('cartItem/deleteBySession/{session_id}', [CartItemController::class, 'deleteBySession']);
 Route::get('cartItem/session/{session_id}/product/{product_id}', [CartItemController::class, 'getBySessionAndProduct']);
 Route::resource('cartItem', CartItemController::class);
+
+Route::get('/orderDetail/hasOrdered', [OrderDetailController::class, 'hasOrdered']);
 Route::resource('orderDetail', OrderDetailController::class);
 Route::get('orderDetail/byUser/{user_id}', [OrderDetailController::class, 'getByUser']);
 Route::delete('orderDetail/{order_id}/cancel', [OrderDetailController::class, 'cancelOrder']);
 Route::resource('orderItem', OrderItemController::class);
 
+Route::get('productRating/hasRated', [ProductRatingController::class, 'hasRated']);
 Route::resource('productRating', ProductRatingController::class);
 Route::resource('questionAnswer', QuestionAnswerController::class);
 Route::resource('productImage', ProductImageController::class);

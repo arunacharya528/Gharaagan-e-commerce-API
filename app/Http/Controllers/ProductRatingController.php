@@ -39,9 +39,9 @@ class ProductRatingController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user_id !== Auth::user()->id) {
-            return redirect()->route("unauthorized");
-        }
+        // if ($request->user_id !== Auth::user()->id) {
+        //     return redirect()->route("unauthorized");
+        // }
         $rating = ProductRating::create($request->all());
         return response()->json($rating);
     }
@@ -92,5 +92,24 @@ class ProductRatingController extends Controller
     public function destroy(ProductRating $productRating)
     {
         return ProductRating::destroy($productRating->id);
+    }
+
+
+    public function hasRated(Request $request)
+    {
+        if (!$request->exists('user_id') || !$request->exists('product_id')) {
+            return response()->json("User id and product id required", 500);
+        }
+        $rated = ProductRating::where([
+            'user_id' => $request->input('user_id'),
+            'product_id' => $request->input('product_id')
+
+        ])->exists();
+
+        if ($rated) {
+            return response()->json("Found");
+        }else{
+            return response()->json("Not Found",204);
+        }
     }
 }
