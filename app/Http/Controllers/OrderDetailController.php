@@ -62,13 +62,13 @@ class OrderDetailController extends Controller
     public function show(OrderDetail $orderDetail)
     {
         $order = OrderDetail::with([
-                'orderItems',
-                'orderItems.product',
-                'orderItems.inventory.discount',
-                'user',
-                'address',
-                'discount'
-            ])->find($orderDetail->id);
+            'orderItems.product',
+            'orderItems.product.images.file',
+            'orderItems.inventory.discount',
+            'user',
+            'address.delivery',
+            'discount',
+        ])->find($orderDetail->id);
         return response()->json($order);
     }
 
@@ -160,5 +160,24 @@ class OrderDetailController extends Controller
         DB::commit();
 
         return response()->json(['message' => "Order cancelled successfully"], 200);
+    }
+
+    public function hasOrdered(Request $request)
+    {
+        if (!$request->exists('user_id') || !$request->exists('product_id')) {
+            return response()->json("User id and product id required", 500);
+        }
+
+        $orderDetail = OrderDetail::where(
+            [
+                'user_id' => $request->input('user_id'),
+            ]
+        )->with(['orderItems'])->get();
+
+        if ($orderDetail->contains('product_id', $request->input('product_id'))) {
+            return response()->json("Found");
+        } else {
+            return response()->json("Not Found", 204);
+        }
     }
 }

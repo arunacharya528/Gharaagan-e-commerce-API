@@ -164,14 +164,7 @@ class UserController extends Controller
 
     public function getOrderDetail(User $user)
     {
-        $user =  User::with([
-            'orderDetails.orderItems.product',
-            'orderDetails.orderItems.product.images.file',
-            'orderDetails.orderItems.inventory.discount',
-            'orderDetails.user',
-            'orderDetails.address',
-            'orderDetails.discount',
-        ])->find($user->id);
+        $user =  User::find($user->id);
         return response()->json($user->orderDetails);
     }
 
