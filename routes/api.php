@@ -91,7 +91,7 @@ Route::get('user/{user}/ratings', [UserController::class, 'getRatings']);
 Route::get('user/{user}/questionAnswers', [UserController::class, 'getQuestionAnswers']);
 Route::get('user/{user}/addresses', [UserController::class, 'getAddresses']);
 Route::get('user/{user}/wishlist', [UserController::class, 'getWishList']);
-
+Route::post('user/{user}/checkout',[UserController::class, 'checkout']);
 
 Route::resource('user', UserController::class);
 Route::resource('userAddress', UserAddressController::class);

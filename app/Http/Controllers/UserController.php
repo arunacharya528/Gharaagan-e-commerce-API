@@ -2,9 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CartItem;
+use App\Models\Discount;
+use App\Models\OrderDetail;
+use App\Models\OrderItem;
+use App\Models\ProductInventory;
+use App\Models\ShoppingSession;
 use App\Models\User;
+use App\Models\UserAddress;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 
@@ -209,5 +218,85 @@ class UserController extends Controller
             unset($wish->product['ratings']);
         }
         return response()->json($user->wishlist);
+    }
+
+
+    public function checkout(Request $request, User $user)
+    {
+        DB::beginTransaction();
+        $priceAfterDiscount = function ($price, $discount) {
+            if ($discount === null || $discount->active === 0) {
+                return $price;
+            } else {
+                return $price - (0.01 * $discount->discount_percent * $price);
+            }
+        };
+        try {
+            $session = ShoppingSession::where('user_id', $user->id)->first();
+
+            if (!$request->exists('address_id')) {
+                throw new Exception('Address is required');
+            }
+
+            $discount_id = null;
+            if ($request->exists('discount_id')) {
+                $discount_id = $request->input('discount_id');
+            }
+
+            $order = OrderDetail::create([
+                'user_id' => $user->id,
+                'address_id' => $request->input('address_id'),
+                'discount_id' => $request->input('discount_id'),
+                'total' => 0
+            ]);
+
+
+            $total = 0;
+            foreach ($session->cartItems as $item) {
+
+                // add price after discount in each loop to total
+                $inventory = ProductInventory::with('discount')->find($item->inventory_id);
+                $total += $priceAfterDiscount($inventory->price, $inventory->discount) * $item->quantity;
+
+                if ($inventory->quantity > $item->quantity) {
+
+                    // create order item
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'product_id' => $item->product_id,
+                        'inventory_id' => $item->inventory_id,
+                        'quantity' => $item->quantity
+                    ]);
+
+                    // updating quantity of product in inventory
+                    $inventory->quantity = $inventory->quantity - $item->quantity;
+                    $inventory->save();
+                } else {
+                    throw new Exception("Requested quantity of $item->product is unavailable.");
+                }
+            }
+
+            // get discounted price of order
+            $discount = Discount::find($discount_id);
+            $total = $priceAfterDiscount($total, $discount);
+
+            // get delivery price
+            $address = UserAddress::with('delivery')->find($request->input('address_id'));
+            $total += $address->delivery->price;
+
+            // save total price
+            $order->total = $total;
+            $order->status = 1;
+            $order->save();
+
+            // delete all cart items
+            CartItem::where('session_id', $session->id)->delete();
+        } catch (\Throwable $th) {
+            error_log($th->getMessage());
+            DB::rollBack();
+            return response()->json(['error' => $th->getMessage()], 500);
+        }
+        DB::commit();
+        return response()->json($order);
     }
 }
