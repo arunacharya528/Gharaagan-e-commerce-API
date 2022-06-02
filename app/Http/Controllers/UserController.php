@@ -206,17 +206,15 @@ class UserController extends Controller
     public function getWishList(User $user)
     {
         $user =  User::with([
-            'wishlist.product.category',
-            'wishlist.product.inventories.discount',
-            'wishlist.product.images.file',
-            'wishlist.product.ratings',
-            'wishlist.product.brand'
+            'wishlist.product' => function ($query) {
+                return $query->with(
+                    'category',
+                    'inventories.discount',
+                    'images.file',
+                    'brand'
+                )->withAvg('ratings', 'rate');
+            }
         ])->find($user->id);
-
-        foreach ($user->wishlist as $wish) {
-            $wish->product['averageRating'] = $wish->product->ratings->avg('rate');
-            unset($wish->product['ratings']);
-        }
         return response()->json($user->wishlist);
     }
 
