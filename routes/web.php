@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\OrderDetail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get("/view/bill/{orderDetail}", function (OrderDetail $orderDetail) {
+    $orderDetail = OrderDetail::with([
+        'address.delivery',
+        'user',
+        'discount',
+        'orderItems.inventory',
+        'orderItems.product'
+    ])->find($orderDetail->id);
+    // $orderDetail =
+    // dd($orderDetail);
+    return view('invoice', ['orderDetail' => $orderDetail]);
 });
