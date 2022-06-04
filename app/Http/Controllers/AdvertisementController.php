@@ -37,12 +37,7 @@ class AdvertisementController extends Controller
             $advertisements = $advertisements->where('active', true);
             $advertisements = $advertisements->whereDate('active_from', '<=', (date('Y-m-d')));
             $advertisements = $advertisements->whereDate('active_to', '>=', (date('Y-m-d')));
-            $advertisements = $request->input('page') !== null ? $advertisements->where('page', $request->input('page')) : $advertisements;
-            $advertisements = $request->input('type') !== null ? $advertisements->where('type', $request->input('type')) : $advertisements;
             $advertisements =  $advertisements->get();
-            foreach ($advertisements as $advertisement) {
-                $advertisement->file->full_path = env('APP_URL') . '/storage/' . $advertisement->file->path;
-            }
         } catch (\Throwable $th) {
             error_log($th->getMessage());
             return response()->json(['error' => 'There was a problem retreiving data'], 500);
