@@ -181,7 +181,9 @@ class UserController extends Controller
     public function getRatings(User $user)
     {
         $user =  User::with([
-            'productRatings.product',
+            'productRatings' => function ($query) {
+                $query->with('product')->orderBy('created_at', 'desc');
+            },
         ])->find($user->id);
         return response()->json($user->productRatings);
     }

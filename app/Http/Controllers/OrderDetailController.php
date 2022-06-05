@@ -61,14 +61,18 @@ class OrderDetailController extends Controller
      */
     public function show(OrderDetail $orderDetail)
     {
+        $orderUser = OrderDetail::with('user')->find($orderDetail->id);
+
         $order = OrderDetail::with([
-            'orderItems.product',
+            'orderItems.product.ratings' => function ($query) use ($orderUser) {
+                $query->where('user_id', $orderUser->user->id)->get();
+            },
             'orderItems.product.images.file',
             'orderItems.inventory.discount',
-            'user',
             'address.delivery',
             'discount',
         ])->find($orderDetail->id);
+
         return response()->json($order);
     }
 
