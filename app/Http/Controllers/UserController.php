@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\Mailer;
 use App\Models\CartItem;
 use App\Models\Discount;
 use App\Models\OrderDetail;
@@ -14,6 +15,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 
@@ -289,8 +291,14 @@ class UserController extends Controller
             $order->status = 1;
             $order->save();
 
+
             // delete all cart items
             CartItem::where('session_id', $session->id)->delete();
+
+            $subject = 'Gharagan Invoice of order #' . $order->id;
+            $body = "";
+            Mail::to("acharyaumesh742@gmail.com")->send(new Mailer($subject, $body));
+
         } catch (\Throwable $th) {
             error_log($th->getMessage());
             DB::rollBack();

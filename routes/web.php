@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MailController;
 use App\Models\OrderDetail;
 use Illuminate\Support\Facades\Route;
 
@@ -30,3 +31,13 @@ Route::get("/view/bill/{orderDetail}", function (OrderDetail $orderDetail) {
     // dd($orderDetail);
     return view('invoice', ['orderDetail' => $orderDetail]);
 });
+
+
+Route::get("/view/mailTemplate", function () {
+    return view("mail", ['body' => "
+<h1>This if title of the body</h1>
+<p>This is a paragraph of the body</p>
+"]);
+});
+
+Route::post("/sendmail", [MailController::class, 'sendMail']);
