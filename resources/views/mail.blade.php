@@ -15,9 +15,6 @@
         .header {
             background-color: crimson;
             color: white;
-            /* display: flex; */
-            /* flex-direction: column; */
-            /* align-items: center; */
             display: block;
             margin: auto;
         }
@@ -47,7 +44,7 @@
             display: block;
             margin: auto;
             background-color: #334f80;
-            padding: 2rem 0;
+            /* padding: 2rem 0; */
         }
 
         .footer * {

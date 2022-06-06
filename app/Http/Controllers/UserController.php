@@ -299,6 +299,9 @@ class UserController extends Controller
             $body = "";
             Mail::to("acharyaumesh742@gmail.com")->send(new Mailer($subject, $body));
 
+            // $pdf = PDF::loadView('pdf.invoice', $data);
+
+
         } catch (\Throwable $th) {
             error_log($th->getMessage());
             DB::rollBack();

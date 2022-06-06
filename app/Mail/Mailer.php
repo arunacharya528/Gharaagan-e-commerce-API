@@ -18,9 +18,14 @@ class Mailer extends Mailable
      */
     public function __construct($subject, $body, $priorityLevel = 3)
     {
+        $this->subject($subject);
         $this->body = $body;
-        $this->subjectString = $subject;
-        $this->priorityLevel = $priorityLevel;
+        $this->priority($priorityLevel);
+    }
+
+    public function setAttachment($attachment, $name, $options)
+    {
+        $this->attachData($attachment, $name, $options);
     }
 
     /**
@@ -30,6 +35,6 @@ class Mailer extends Mailable
      */
     public function build()
     {
-        return $this->subject($this->subjectString)->priority($this->priorityLevel)->view('mail');
+        return $this->markdown('vendor.mail.html.message', ['slot' => $this->body]);
     }
 }

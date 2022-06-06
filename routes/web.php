@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\MailController;
 use App\Models\OrderDetail;
+use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,10 +35,18 @@ Route::get("/view/bill/{orderDetail}", function (OrderDetail $orderDetail) {
 
 
 Route::get("/view/mailTemplate", function () {
-    return view("mail", ['body' => "
-<h1>This if title of the body</h1>
-<p>This is a paragraph of the body</p>
-"]);
+    //     return view("vendor.mail.html.message", ['subcopy' => "
+    // <h1>This if title of the body</h1>
+    // <p>This is a paragraph of the body</p>
+    // "])->render();
+
+    $markdown = new Markdown(view(), config('mail.markdown'));
+    return $markdown->render('vendor.mail.html.message', ['slot' => "
+     <h1>This is title of the body</h1>
+     <p>This is a paragraph of the body</p>
+     "]);
 });
 
 Route::post("/sendmail", [MailController::class, 'sendMail']);
+
+Route::get("/downloadpdf", [MailController::class, 'downloadView']);
