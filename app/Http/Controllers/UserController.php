@@ -29,7 +29,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user = User::get();
+        $user = User::withCount('hasNewsletter')->get();
         return response()->json($user);
     }
 
@@ -304,8 +304,6 @@ class UserController extends Controller
                 'mime' => 'application/pdf',
             ]);
             Mail::to("acharyaumesh742@gmail.com")->send($mailable);
-
-
         } catch (\Throwable $th) {
             error_log($th->getMessage());
             DB::rollBack();

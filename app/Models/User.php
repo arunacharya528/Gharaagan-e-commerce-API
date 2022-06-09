@@ -64,4 +64,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Wishlist::class, 'user_id');
     }
+
+    public function hasNewsletter()
+    {
+        return $this->hasOne(Email::class, 'email', 'email');
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Email;
 use App\Models\ShoppingSession;
 use App\Models\User;
 use Carbon\Carbon;
@@ -36,8 +37,10 @@ class AuthController extends Controller
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->save();
-        $session = ShoppingSession::create(['user_id' => $user->id]);
-        return response()->json(['data' => $user, 'session_id' => $session->id]);
+
+        ShoppingSession::create(['user_id' => $user->id]);
+        Email::create(['email' => $user->email]);
+        return response()->json($user->with('hasNewsletter'));
     }
 
     public function login(Request $request)
