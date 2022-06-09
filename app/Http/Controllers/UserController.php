@@ -11,6 +11,7 @@ use App\Models\ProductInventory;
 use App\Models\ShoppingSession;
 use App\Models\User;
 use App\Models\UserAddress;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -291,15 +292,18 @@ class UserController extends Controller
             $order->status = 1;
             $order->save();
 
-
             // delete all cart items
             CartItem::where('session_id', $session->id)->delete();
 
-            $subject = 'Gharagan Invoice of order #' . $order->id;
-            $body = "";
-            Mail::to("acharyaumesh742@gmail.com")->send(new Mailer($subject, $body));
+            $pdf = Pdf::loadView('invoice', ['orderDetail' => $order])->setPaper('a4', 'landscape');
 
-            // $pdf = PDF::loadView('pdf.invoice', $data);
+            $subject = 'Gharagan Invoice of order #' . $order->id;
+            $body = "Invoice of gharagan order. The content of this bill may change over time. It is advised to keep this mail as a proop of purchase in this site.";
+            $mailable = new Mailer($subject, $body);
+            $mailable->setAttachment($pdf->output(), 'demo.pdf', [
+                'mime' => 'application/pdf',
+            ]);
+            Mail::to("acharyaumesh742@gmail.com")->send($mailable);
 
 
         } catch (\Throwable $th) {

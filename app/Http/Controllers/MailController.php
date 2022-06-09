@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Mail\Mailer;
+use App\Models\OrderDetail;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Storage;
 
 class MailController extends Controller
@@ -33,11 +34,17 @@ class MailController extends Controller
         }
     }
 
-    public function downloadView()
+    public function downloadView(Request $request)
     {
+        $order = OrderDetail::with([
+            'orderItems.product.ratings',
+            'orderItems.product.images.file',
+            'orderItems.inventory.discount',
+            'address.delivery',
+            'discount',
+        ])->find($request->input('orderid'));
 
-        $data = ['body' => 'This is a body of this pdf'];
-        $pdf = PDF::loadView('mail', $data);
+        $pdf = Pdf::loadView('invoice', ['orderDetail' => $order])->setPaper('a4', 'landscape');
         return $pdf->download('demo.pdf');
     }
 }
