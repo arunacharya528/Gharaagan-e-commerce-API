@@ -6,6 +6,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\OrderItemController;
@@ -91,7 +92,7 @@ Route::get('user/{user}/ratings', [UserController::class, 'getRatings']);
 Route::get('user/{user}/questionAnswers', [UserController::class, 'getQuestionAnswers']);
 Route::get('user/{user}/addresses', [UserController::class, 'getAddresses']);
 Route::get('user/{user}/wishlist', [UserController::class, 'getWishList']);
-Route::post('user/{user}/checkout',[UserController::class, 'checkout']);
+Route::post('user/{user}/checkout', [UserController::class, 'checkout']);
 
 Route::resource('user', UserController::class);
 Route::resource('userAddress', UserAddressController::class);
@@ -119,3 +120,6 @@ Route::resource('file', FileController::class);
 
 Route::get('wishlist/exists/', [WishlistController::class, 'wishListExists']);
 Route::resource('wishlist', WishlistController::class);
+
+Route::post('newsletter/conditionalSubscribe', [EmailController::class, 'createConditionally']);
+Route::resource('newsletter', EmailController::class);
