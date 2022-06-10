@@ -9,17 +9,17 @@ class QuestionAnswer extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['product_id', 'user_id', 'query', 'parent_id'];
+    protected $fillable = ['product_id', 'user_id', 'question', 'answer'];
 
-    public function answers()
-    {
-        return $this->hasMany(QuestionAnswer::class, 'parent_id');
-    }
+    // public function answers()
+    // {
+    //     return $this->hasMany(QuestionAnswer::class, 'parent_id');
+    // }
 
-    public function questions()
-    {
-        return $this->answers()->with('questions');
-    }
+    // public function questions()
+    // {
+    //     return $this->answers()->with('questions');
+    // }
 
     public function user()
     {

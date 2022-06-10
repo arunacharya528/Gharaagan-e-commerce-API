@@ -74,13 +74,16 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product = Product::with('category.parent.childCategories')
-            ->with('inventories.discount')
-            ->with('ratings.user')
-            ->with('images.file')
-            ->with('brand')
-            ->with('questions.answers')
-            ->with('questions.user')
+        $product = Product::with([
+            'category.parent.childCategories',
+            'inventories.discount',
+            'ratings.user',
+            'images.file',
+            'brand',
+            'questionAnswers' => function ($query) {
+                $query->with('user')->orderBy('created_at', 'desc');
+            }
+        ])
             ->find($product->id);
         return response()->json($product);
     }

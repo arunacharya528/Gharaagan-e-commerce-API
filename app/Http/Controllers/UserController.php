@@ -194,8 +194,9 @@ class UserController extends Controller
     public function getQuestionAnswers(User $user)
     {
         $user =  User::with([
-            'questionAnswers.answers',
-            'questionAnswers.product',
+            'questionAnswers' => function ($query) {
+                $query->with('product')->orderBy('created_at', 'desc');
+            }
         ])->find($user->id);
         return response()->json($user->questionAnswers);
     }

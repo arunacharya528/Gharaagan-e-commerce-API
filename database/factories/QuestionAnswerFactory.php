@@ -19,8 +19,8 @@ class QuestionAnswerFactory extends Factory
         return [
             'product_id' => $this->faker->randomElement(Product::pluck('id')),
             'user_id' => $this->faker->randomElement(User::pluck('id')),
-            'query' => $this->faker->paragraph(),
-            'parent_id' => $this->faker->randomElement(QuestionAnswer::pluck('id'))
+            'question' => $this->faker->paragraph(),
+            'answer' => $this->faker->paragraph(),
         ];
     }
 }

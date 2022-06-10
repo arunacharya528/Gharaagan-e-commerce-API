@@ -15,14 +15,12 @@ class QuestionAnswerController extends Controller
      */
     public function index()
     {
-        $rating = QuestionAnswer::with([
-            'answers',
+        $qas = QuestionAnswer::with([
             'user',
             'product'
         ])
-            ->where(['parent_id' => null])
             ->orderBy('updated_at', 'desc')->get();
-        return response()->json($rating);
+        return response()->json($qas);
     }
 
     /**
@@ -46,8 +44,8 @@ class QuestionAnswerController extends Controller
         // if ($request->user_id !== Auth::user()->id) {
         //     return redirect()->route("unauthorized");
         // }
-        $rating = QuestionAnswer::create($request->all());
-        return response()->json($rating);
+        $qa = QuestionAnswer::create($request->all());
+        return response()->json($qa);
     }
 
     /**
@@ -58,8 +56,8 @@ class QuestionAnswerController extends Controller
      */
     public function show(QuestionAnswer $questionAnswer)
     {
-        $rating = QuestionAnswer::find($questionAnswer->id);
-        return response()->json($rating);
+        $qa = QuestionAnswer::find($questionAnswer->id);
+        return response()->json($qa);
     }
 
     /**
@@ -82,9 +80,9 @@ class QuestionAnswerController extends Controller
      */
     public function update(Request $request, QuestionAnswer $questionAnswer)
     {
-        $rating = QuestionAnswer::find($questionAnswer->id);
-        $rating->update($request->all());
-        return response()->json($rating);
+        $qa = QuestionAnswer::find($questionAnswer->id);
+        $qa->update($request->all());
+        return response()->json($qa);
     }
 
     /**
@@ -96,7 +94,7 @@ class QuestionAnswerController extends Controller
     public function destroy(QuestionAnswer $questionAnswer)
     {
         // Delete with respective parentid
-        QuestionAnswer::where(['parent_id' => $questionAnswer->id])->delete();
+        // QuestionAnswer::where(['parent_id' => $questionAnswer->id])->delete();
         return QuestionAnswer::destroy($questionAnswer->id);
     }
 }
