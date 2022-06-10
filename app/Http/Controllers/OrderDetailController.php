@@ -7,6 +7,7 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductInventory;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -109,41 +110,52 @@ class OrderDetailController extends Controller
      */
     public function destroy(OrderDetail $orderDetail)
     {
-        return OrderDetail::destroy($orderDetail->id);
-    }
-
-    /**
-     * Get order detail by user id
-     */
-    public function getByUser($user_id)
-    {
-        if (User::find($user_id)->id !== Auth::user()->id) {
-            return redirect()->route('unauthorized');
+        DB::beginTransaction();
+        try {
+            OrderItem::where(['order_id' => $orderDetail->id])->delete();
+            OrderDetail::destroy($orderDetail->id);
+        } catch (\Throwable $th) {
+            error_log($th->getMessage());
+            DB::rollBack();
+            return response()->json(['error' => $th->getMessage()], 500);
         }
+        DB::commit();
 
-        $orderDetail = User::with('orderDetails.orderItems.product.inventory')
-            ->with('orderDetails.orderItems.product.discount')
-            ->with('orderDetails.orderItems.product.category')
-            ->with('orderDetails.orderItems.product.brand')
-            ->with('orderDetails.orderItems.product.images')
-
-            ->find($user_id);
-
-        return response()->json($orderDetail);
+        return response()->json("Successfully deleted order and its items");
     }
+
+    // /**
+    //  * Get order detail by user id
+    //  */
+    // public function getByUser($user_id)
+    // {
+    //     if (User::find($user_id)->id !== Auth::user()->id) {
+    //         return redirect()->route('unauthorized');
+    //     }
+
+    //     $orderDetail = User::with('orderDetails.orderItems.product.inventory')
+    //         ->with('orderDetails.orderItems.product.discount')
+    //         ->with('orderDetails.orderItems.product.category')
+    //         ->with('orderDetails.orderItems.product.brand')
+    //         ->with('orderDetails.orderItems.product.images')
+
+    //         ->find($user_id);
+
+    //     return response()->json($orderDetail);
+    // }
 
     /**
      * Cancels order and all of its components
      */
-    public function cancelOrder($order_id)
+    public function cancelOrder(OrderDetail $orderDetail)
     {
-        if (OrderDetail::find($order_id)->user->id !== Auth::user()->id) {
-            return redirect()->route('unauthorized');
-        }
+        // if (OrderDetail::find($order_id)->user->id !== Auth::user()->id) {
+        //     return redirect()->route('unauthorized');
+        // }
         DB::beginTransaction();
         try {
             // getting all ordering items
-            $orderItems = OrderItem::where(['order_id' => $order_id])->get();
+            $orderItems = OrderItem::where(['order_id' => $orderDetail->id])->get();
 
             foreach ($orderItems as $item) {
                 // adding deleting order quantity into the quantity of product
@@ -155,33 +167,47 @@ class OrderDetailController extends Controller
             }
 
             // deleting order detail
-            OrderDetail::destroy($order_id);
+            OrderDetail::destroy($orderDetail->id);
         } catch (\Throwable $th) {
             error_log($th->getMessage());
             DB::rollBack();
-            return response()->json(['message' => "There was problem cancelling order"], 500);
+            return response()->json(['error' => $th->getMessage()], 500);
         }
         DB::commit();
 
         return response()->json(['message' => "Order cancelled successfully"], 200);
     }
 
-    public function hasOrdered(Request $request)
+    public function streamInvoice(OrderDetail $orderDetail)
     {
-        if (!$request->exists('user_id') || !$request->exists('product_id')) {
-            return response()->json("User id and product id required", 500);
-        }
+        $order = OrderDetail::with([
+            'orderItems.product.ratings',
+            'orderItems.product.images.file',
+            'orderItems.inventory.discount',
+            'address.delivery',
+            'discount',
+        ])->find($orderDetail->id);
 
-        $orderDetail = OrderDetail::where(
-            [
-                'user_id' => $request->input('user_id'),
-            ]
-        )->with(['orderItems'])->get();
-
-        if ($orderDetail->contains('product_id', $request->input('product_id'))) {
-            return response()->json("Found");
-        } else {
-            return response()->json("Not Found", 204);
-        }
+        $pdf = Pdf::loadView('invoice', ['orderDetail' => $order])->setPaper('a4', 'landscape');
+        return $pdf->stream('demo.pdf');
     }
+
+    // public function hasOrdered(Request $request)
+    // {
+    //     if (!$request->exists('user_id') || !$request->exists('product_id')) {
+    //         return response()->json("User id and product id required", 500);
+    //     }
+
+    //     $orderDetail = OrderDetail::where(
+    //         [
+    //             'user_id' => $request->input('user_id'),
+    //         ]
+    //     )->with(['orderItems'])->get();
+
+    //     if ($orderDetail->contains('product_id', $request->input('product_id'))) {
+    //         return response()->json("Found");
+    //     } else {
+    //         return response()->json("Not Found", 204);
+    //     }
+    // }
 }

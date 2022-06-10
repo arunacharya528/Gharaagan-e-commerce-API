@@ -102,10 +102,10 @@ Route::delete('cartItem/deleteBySession/{session_id}', [CartItemController::clas
 Route::get('cartItem/session/{session_id}/product/{product_id}', [CartItemController::class, 'getBySessionAndProduct']);
 Route::resource('cartItem', CartItemController::class);
 
-Route::get('/orderDetail/hasOrdered', [OrderDetailController::class, 'hasOrdered']);
+// Route::get('/orderDetail/hasOrdered', [OrderDetailController::class, 'hasOrdered']);
+Route::delete('orderDetail/{orderDetail}/cancel', [OrderDetailController::class, 'cancelOrder']);
 Route::resource('orderDetail', OrderDetailController::class);
-Route::get('orderDetail/byUser/{user_id}', [OrderDetailController::class, 'getByUser']);
-Route::delete('orderDetail/{order_id}/cancel', [OrderDetailController::class, 'cancelOrder']);
+// Route::get('orderDetail/byUser/{user_id}', [OrderDetailController::class, 'getByUser']);
 Route::resource('orderItem', OrderItemController::class);
 
 Route::get('productRating/hasRated', [ProductRatingController::class, 'hasRated']);

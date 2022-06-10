@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\OrderDetailController;
 use App\Models\OrderDetail;
 use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\Route;
@@ -49,4 +50,4 @@ Route::get("/view/mailTemplate", function () {
 
 Route::post("/sendmail", [MailController::class, 'sendMail']);
 
-Route::get("/downloadpdf", [MailController::class, 'downloadView']);
+Route::get("/view/invoice/{orderDetail}", [OrderDetailController::class, 'streamInvoice']);
