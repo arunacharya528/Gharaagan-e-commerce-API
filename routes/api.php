@@ -10,6 +10,7 @@ use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\OrderItemController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductImageController;
@@ -123,3 +124,6 @@ Route::resource('wishlist', WishlistController::class);
 
 Route::post('newsletter/conditionalSubscribe', [EmailController::class, 'createConditionally']);
 Route::resource('newsletter', EmailController::class);
+
+Route::get("/page/{slug}", [PageController::class, 'showBySlug']);
+Route::resource('page', PageController::class);

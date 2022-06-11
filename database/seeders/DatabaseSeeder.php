@@ -39,5 +39,6 @@ class DatabaseSeeder extends Seeder
         $this->call(WishlistSeeder::class);
 
         $this->call(EmailSeeder::class);
+        $this->call(PageSeeder::class);
     }
 }
