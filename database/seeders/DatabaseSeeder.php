@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\PageLink;
 use Database\Factories\DeliveryFactory;
 use Illuminate\Database\Seeder;
 
@@ -40,5 +41,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(EmailSeeder::class);
         $this->call(PageSeeder::class);
+        $this->call(PageLinkSeeder::class);
     }
 }
