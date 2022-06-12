@@ -19,6 +19,7 @@ use App\Http\Controllers\ProductInventoryController;
 use App\Http\Controllers\ProductRatingController;
 use App\Http\Controllers\QuestionAnswerController;
 use App\Http\Controllers\ShoppingSessionController;
+use App\Http\Controllers\SiteDetailController;
 use App\Http\Controllers\UserAddressController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
@@ -130,6 +131,7 @@ Route::get("/page/{slug}", [PageController::class, 'showBySlug']);
 Route::resource('page', PageController::class);
 Route::resource('pageLink', PageLinkController::class);
 
+Route::resource("siteDetail", SiteDetailController::class);
 
 Route::get('/maintainance', function () {
     return response()->json(app()->isDownForMaintenance());
