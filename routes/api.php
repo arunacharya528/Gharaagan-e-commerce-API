@@ -129,3 +129,8 @@ Route::resource('newsletter', EmailController::class);
 Route::get("/page/{slug}", [PageController::class, 'showBySlug']);
 Route::resource('page', PageController::class);
 Route::resource('pageLink', PageLinkController::class);
+
+
+Route::get('/maintainance', function () {
+    return response()->json(app()->isDownForMaintenance());
+});
