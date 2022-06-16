@@ -16,17 +16,7 @@ class FileController extends Controller
      */
     public function index()
     {
-        $files = File::with(['productImages', 'brands', 'advertisements'])->get();
-
-        // getting count of usage of the respective images
-        foreach ($files as $file) {
-            $file['number_of_product_images'] = count($file->productImages);
-            $file['number_of_brands'] = count($file->brands);
-            $file['number_of_advertisements'] = count($file->advertisements);
-            unset($file->productImages);
-            unset($file->brands);
-            unset($file->advertisements);
-        }
+        $files = File::withCount(['productImages', 'brands', 'advertisements'])->get();
         return response()->json($files);
     }
 
@@ -54,7 +44,7 @@ class FileController extends Controller
             $status = Storage::disk('public')->put('', $request->file('file'));
             $file = File::create([
                 'name' => $request->name,
-                'path' => $status
+                'path' => ($status)
             ]);
         } catch (\Throwable $th) {
             error_log($th->getMessage());
