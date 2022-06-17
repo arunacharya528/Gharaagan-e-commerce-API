@@ -36,7 +36,10 @@ class PageController extends Controller
      */
     public function store(Request $request)
     {
+        $request['slug'] = implode("-", explode(" ", $request->title)) . "-" . date("ymdhis");
+        $request['published'] = false;
         $page = Page::create($request->all());
+
         return response()->json($page);
     }
 

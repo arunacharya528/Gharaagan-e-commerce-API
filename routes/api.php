@@ -127,7 +127,7 @@ Route::resource('wishlist', WishlistController::class);
 Route::post('newsletter/conditionalSubscribe', [EmailController::class, 'createConditionally']);
 Route::resource('newsletter', EmailController::class);
 
-Route::get("/page/{slug}", [PageController::class, 'showBySlug']);
+Route::get("/page/bySlug/{slug}", [PageController::class, 'showBySlug']);
 Route::resource('page', PageController::class);
 Route::resource('pageLink', PageLinkController::class);
 
