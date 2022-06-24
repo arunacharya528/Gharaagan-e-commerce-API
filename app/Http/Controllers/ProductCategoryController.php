@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductCategoryController extends Controller
 {
@@ -65,8 +66,12 @@ class ProductCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $category = ProductCategory::create($request->all());
-        return response()->json($category);
+        if (Auth::user()->role === 3) {
+            return redirect(route('unauthorized'));
+        } else {
+            $category = ProductCategory::create($request->all());
+            return response()->json($category);
+        }
     }
 
     /**
@@ -101,9 +106,13 @@ class ProductCategoryController extends Controller
      */
     public function update(Request $request, ProductCategory $productCategory)
     {
-        $productCategory = ProductCategory::find($productCategory->id);
-        $productCategory->update($request->all());
-        return response()->json($productCategory);
+        if (Auth::user()->role === 3) {
+            return redirect(route('unauthorized'));
+        } else {
+            $productCategory = ProductCategory::find($productCategory->id);
+            $productCategory->update($request->all());
+            return response()->json($productCategory);
+        }
     }
 
     /**
@@ -114,6 +123,10 @@ class ProductCategoryController extends Controller
      */
     public function destroy(ProductCategory $productCategory)
     {
-        return ProductCategory::destroy($productCategory->id);
+        if (Auth::user()->role === 3) {
+            return redirect(route('unauthorized'));
+        } else {
+            return ProductCategory::destroy($productCategory->id);
+        }
     }
 }
