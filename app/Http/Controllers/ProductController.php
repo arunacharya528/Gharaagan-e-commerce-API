@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use ApiHelper;
 use App\Models\Brand;
 use App\Models\Product;
 use Exception;
@@ -13,9 +14,10 @@ class ProductController extends Controller
     /**
      * Constructor
      */
+    use ApiHelper;
     public function __construct()
     {
-        // $this->middleware("auth:api")->only(["store", "update", 'destroy']);
+        $this->middleware("auth:sanctum")->only(["store", "show", "update", 'destroy']);
     }
 
     //=========================================
@@ -61,9 +63,14 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $request['SKU'] = Str::uuid();
-        $product = Product::create($request->all());
-        return response()->json($product);
+        if ($this->isAdmin($request->user()) || $this->isSuperAdmin($request->user())) {
+            $request['SKU'] = Str::uuid();
+            $product = Product::create($request->all());
+            return $this->onSuccess($product, "Product created");
+        }
+
+        // return response()->json($product);
+        return $this->onError(401, 'Unauthorized Access');
     }
 
     /**

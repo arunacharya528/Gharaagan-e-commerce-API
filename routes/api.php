@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CartItemController;
@@ -43,96 +43,74 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
-Route::group(['prefix' => 'auth', 'namespace' => 'Api'], function () {
+//==================================
+//
+//  Routes that are open to all
+//
+//==================================
 
-    Route::post('register',     [AuthController::class, 'register']);
-
-    /* ------------------------ For Personal Access Token ----------------------- */
-    Route::post('login',        [AuthController::class, 'login']);
-    /* -------------------------------------------------------------------------- */
-
-    /* ------------------------ For Password Grant Token ------------------------ */
-    Route::post('login_grant',  [AuthController::class, 'loginGrant']);
-    Route::post('refresh',      [AuthController::class, 'refreshToken']);
-    /* -------------------------------------------------------------------------- */
-
-    Route::get('logout',    [AuthController::class, 'logout'])->middleware('auth:api');
-
-    /* -------------------------------- Fallback -------------------------------- */
-    Route::any('{segment}', function () {
-        return response()->json([
-            'error' => 'Invalid url.'
-        ]);
-    })->where('segment', '.*');
+Route::get('/allProduct', [ProductController::class, 'getAll']);
+Route::get('/oneProduct/{product}', [ProductController::class, 'show']);
+Route::get('/allCategory', [ProductCategoryController::class, 'index']);
+Route::get("/allBrand", [BrandController::class, 'index']);
+Route::get('/activeAds', [AdvertisementController::class, 'activeAdvertisement']);
+Route::get("/allSiteDetail", [SiteDetailController::class, 'index']);
+Route::get("/allPageLinks", [PageLinkController::class, 'index']);
+Route::get("/page/bySlug/{slug}", [PageController::class, 'showBySlug']);
+Route::post('/newsletter/conditionalSubscribe', [EmailController::class, 'createConditionally']);
+Route::get('/maintainance', function () {
+    return response()->json(app()->isDownForMaintenance());
 });
 
+Route::post("/login", [AuthController::class, 'login']);
 Route::get('unauthorized', function () {
     return response()->json([
         'error' => 'Unauthorized.'
     ], 401);
 })->name('unauthorized');
 
-/*-------------------Added middleware in controller-------------------*/
-Route::get('product/all', [ProductController::class, 'getAll']);
-Route::resource('product', ProductController::class);
+//==================================
+//
+//  Routes that are protected collectively
+//
+//==================================
 
-Route::get('advertisement/active', [AdvertisementController::class, 'activeAdvertisement']);
-Route::resource('advertisement', AdvertisementController::class);
-Route::resource('productCategory', ProductCategoryController::class);
-Route::resource('brand', BrandController::class);
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::resource('product', ProductController::class);
+    Route::resource('productCategory', ProductCategoryController::class);
+    Route::resource('brand', BrandController::class);
+    Route::resource('page', PageController::class);
+    Route::resource('pageLink', PageLinkController::class);
+    Route::resource("siteDetail", SiteDetailController::class);
 
-/*-------------------Explicit middleware in all-------------------*/
-// Route::group(['middleware' => 'auth:api'], function () {
-Route::resource('productInventory', ProductInventoryController::class);
+    Route::get('user/session', [AuthController::class, 'getSession']);
+    Route::get('user/orders', [AuthController::class, 'getOrderDetail']);
+    Route::get('user/ratings', [AuthController::class, 'getRatings']);
+    Route::get('user/questionAnswers', [AuthController::class, 'getQuestionAnswers']);
+    Route::get('user/addresses', [AuthController::class, 'getAddresses']);
+    Route::get('user/wishlist', [AuthController::class, 'getWishList']);
+    Route::post('user/checkout', [AuthController::class, 'checkout']);
 
-Route::get('discount/{discountName}/find', [DiscountController::class, 'findDiscount']);
-Route::resource('discount', DiscountController::class);
+    Route::resource('advertisement', AdvertisementController::class);
+    Route::get('discount/{discountName}/find', [DiscountController::class, 'findDiscount']);
 
+    Route::resource('productInventory', ProductInventoryController::class);
+    Route::resource('discount', DiscountController::class);
+    Route::resource('user', UserController::class);
+    Route::resource('userAddress', UserAddressController::class);
+    Route::resource('shoppingSession', ShoppingSessionController::class);
+    Route::resource('cartItem', CartItemController::class);
 
-Route::get('user/{user}/session', [UserController::class, 'getSession']);
-Route::get('user/{user}/orders', [UserController::class, 'getOrderDetail']);
-Route::get('user/{user}/ratings', [UserController::class, 'getRatings']);
-Route::get('user/{user}/questionAnswers', [UserController::class, 'getQuestionAnswers']);
-Route::get('user/{user}/addresses', [UserController::class, 'getAddresses']);
-Route::get('user/{user}/wishlist', [UserController::class, 'getWishList']);
-Route::post('user/{user}/checkout', [UserController::class, 'checkout']);
+    Route::delete('orderDetail/{orderDetail}/cancel', [OrderDetailController::class, 'cancelOrder']);
+    Route::resource('orderDetail', OrderDetailController::class);
 
-Route::resource('user', UserController::class);
-Route::resource('userAddress', UserAddressController::class);
-Route::resource('shoppingSession', ShoppingSessionController::class);
-Route::post('shoppingSession/{session_id}/createOrder', [ShoppingSessionController::class, 'createOrder']);
-Route::delete('cartItem/deleteBySession/{session_id}', [CartItemController::class, 'deleteBySession']);
-Route::get('cartItem/session/{session_id}/product/{product_id}', [CartItemController::class, 'getBySessionAndProduct']);
-Route::resource('cartItem', CartItemController::class);
+    Route::resource('orderItem', OrderItemController::class);
+    Route::resource('productRating', ProductRatingController::class);
+    Route::resource('questionAnswer', QuestionAnswerController::class);
+    Route::resource('productImage', ProductImageController::class);
+    Route::resource('file', FileController::class);
+    Route::resource('wishlist', WishlistController::class);
+    Route::resource('newsletter', EmailController::class);
 
-// Route::get('/orderDetail/hasOrdered', [OrderDetailController::class, 'hasOrdered']);
-Route::delete('orderDetail/{orderDetail}/cancel', [OrderDetailController::class, 'cancelOrder']);
-Route::resource('orderDetail', OrderDetailController::class);
-// Route::get('orderDetail/byUser/{user_id}', [OrderDetailController::class, 'getByUser']);
-Route::resource('orderItem', OrderItemController::class);
-
-Route::get('productRating/hasRated', [ProductRatingController::class, 'hasRated']);
-Route::resource('productRating', ProductRatingController::class);
-Route::resource('questionAnswer', QuestionAnswerController::class);
-Route::resource('productImage', ProductImageController::class);
-Route::resource('delivery', DeliveryController::class);
-
-// });
-
-Route::resource('file', FileController::class);
-
-Route::get('wishlist/exists/', [WishlistController::class, 'wishListExists']);
-Route::resource('wishlist', WishlistController::class);
-
-Route::post('newsletter/conditionalSubscribe', [EmailController::class, 'createConditionally']);
-Route::resource('newsletter', EmailController::class);
-
-Route::get("/page/bySlug/{slug}", [PageController::class, 'showBySlug']);
-Route::resource('page', PageController::class);
-Route::resource('pageLink', PageLinkController::class);
-
-Route::resource("siteDetail", SiteDetailController::class);
-
-Route::get('/maintainance', function () {
-    return response()->json(app()->isDownForMaintenance());
+    Route::get('/logout', [AuthController::class, 'logout']);
 });
