@@ -7,18 +7,11 @@ use App\Models\Brand;
 use App\Models\Product;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
-    /**
-     * Constructor
-     */
-    use ApiHelper;
-    public function __construct()
-    {
-        $this->middleware("auth:sanctum")->only(["store", "show", "update", 'destroy']);
-    }
 
     //=========================================
     //
@@ -63,14 +56,13 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        if ($this->isAdmin($request->user()) || $this->isSuperAdmin($request->user())) {
+        if (Auth::user()->role === 3) {
+            return redirect(route('unauthorized'));
+        } else {
             $request['SKU'] = Str::uuid();
             $product = Product::create($request->all());
-            return $this->onSuccess($product, "Product created");
+            return response()->json($product);
         }
-
-        // return response()->json($product);
-        return $this->onError(401, 'Unauthorized Access');
     }
 
     /**
@@ -115,9 +107,13 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $product = Product::find($product->id);
-        $product->update($request->all());
-        return response()->json($product);
+        if (Auth::user()->role === 3) {
+            return redirect(route('unauthorized'));
+        } else {
+            $product = Product::find($product->id);
+            $product->update($request->all());
+            return response()->json($product);
+        }
     }
 
     /**
@@ -128,7 +124,11 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        return Product::destroy($product->id);
+        if (Auth::user()->role === 3) {
+            return redirect(route('unauthorized'));
+        } else {
+            return Product::destroy($product->id);
+        }
     }
 
 
