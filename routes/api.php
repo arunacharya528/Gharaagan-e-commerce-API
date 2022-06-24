@@ -53,6 +53,7 @@ Route::get('/allProduct', [ProductController::class, 'getAll']);
 Route::get('/oneProduct/{product}', [ProductController::class, 'show']);
 Route::get('/allCategory', [ProductCategoryController::class, 'index']);
 Route::get("/allBrand", [BrandController::class, 'index']);
+Route::get("/oneBrand/{brand}", [BrandController::class, 'show']);
 Route::get('/activeAds', [AdvertisementController::class, 'activeAdvertisement']);
 Route::get("/allSiteDetail", [SiteDetailController::class, 'index']);
 Route::get("/allPageLinks", [PageLinkController::class, 'index']);

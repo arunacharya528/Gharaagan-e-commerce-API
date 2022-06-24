@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BrandController extends Controller
 {
@@ -49,8 +50,12 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        $brand = Brand::create($request->all());
-        return response()->json($brand);
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        } else {
+            $brand = Brand::create($request->all());
+            return response()->json($brand);
+        }
     }
 
     /**
@@ -85,9 +90,13 @@ class BrandController extends Controller
      */
     public function update(Request $request, Brand $brand)
     {
-        $brand = Brand::find($brand->id);
-        $brand->update($request->all());
-        return response()->json($brand);
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        } else {
+            $brand = Brand::find($brand->id);
+            $brand->update($request->all());
+            return response()->json($brand);
+        }
     }
 
     /**
@@ -98,6 +107,10 @@ class BrandController extends Controller
      */
     public function destroy(Brand $brand)
     {
-        return Brand::destroy($brand->id);
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        } else {
+            return Brand::destroy($brand->id);
+        }
     }
 }
