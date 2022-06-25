@@ -16,85 +16,116 @@ class CategoryTest extends TestCase
      *
      * @return void
      */
-    public function test_get_all_categories_without_logging_in()
+    public function test_get_all_without_logging_in()
     {
         $response = $this->get('/api/allCategory');
         $response->assertStatus(200);
     }
 
-    public function test_post_a_category()
+    public function test_post_deny_without_logging_in()
     {
-        $superAdmin = User::factory()->create(['role' => 1]);
-        $admin = User::factory()->create(['role' => 2]);
-        $client = User::factory()->create(['role' => 3]);
-
         $category = ProductCategory::factory()->create(['is_parent' => true]);
-
         $response = $this
             ->post("/api/productCategory", $category->toArray());
         $response->assertStatus(302);
+    }
 
+    public function test_post_deny_as_client()
+    {
+        $user = User::factory()->create(['role' => 3]);
+        $category = ProductCategory::factory()->create(['is_parent' => true]);
         $response = $this
-            ->actingAs($superAdmin)->post("/api/productCategory", $category->toArray());
-        $response->assertStatus(200);
-
-        $response = $this
-            ->actingAs($admin)->post("/api/productCategory", $category->toArray());
-        $response->assertStatus(200);
-
-        $response = $this
-            ->actingAs($client)->post("/api/productCategory", $category->toArray());
+            ->actingAs($user)->post("/api/productCategory", $category->toArray());
         $response->assertStatus(302);
     }
 
-    public function test_update_a_category()
+    public function test_post_as_superadmin()
     {
-        $superAdmin = User::factory()->create(['role' => 1]);
-        $admin = User::factory()->create(['role' => 2]);
-        $client = User::factory()->create(['role' => 3]);
-
+        $user = User::factory()->create(['role' => 1]);
         $category = ProductCategory::factory()->create(['is_parent' => true]);
+        $response = $this
+            ->actingAs($user)->post("/api/productCategory", $category->toArray());
+        $response->assertStatus(200);
+    }
 
+    public function test_post_as_admin()
+    {
+        $user = User::factory()->create(['role' => 2]);
+        $category = ProductCategory::factory()->create(['is_parent' => true]);
+        $response = $this
+            ->actingAs($user)->post("/api/productCategory", $category->toArray());
+        $response->assertStatus(200);
+    }
+
+    public function test_put_deny_without_logging_in()
+    {
+        $category = ProductCategory::factory()->create(['is_parent' => true]);
         $response = $this
             ->put("/api/productCategory/" . $category->id, $category->toArray());
         $response->assertStatus(302);
+    }
 
+    public function test_put_deny_as_client()
+    {
+        $user = User::factory()->create(['role' => 3]);
+        $category = ProductCategory::factory()->create(['is_parent' => true]);
         $response = $this
-            ->actingAs($superAdmin)->put("/api/productCategory/" . $category->id, $category->toArray());
-        $response->assertStatus(200);
-
-        $response = $this
-            ->actingAs($admin)->put("/api/productCategory/" . $category->id, $category->toArray());
-        $response->assertStatus(200);
-
-        $response = $this
-            ->actingAs($client)->put("/api/productCategory/" . $category->id, $category->toArray());
+            ->actingAs($user)->put("/api/productCategory/" . $category->id, $category->toArray());
         $response->assertStatus(302);
     }
 
-    public function test_delete_a_category()
+    public function test_put_as_superadmin()
+    {
+        $user = User::factory()->create(['role' => 1]);
+        $category = ProductCategory::factory()->create(['is_parent' => true]);
+        $response = $this
+            ->actingAs($user)->put("/api/productCategory/" . $category->id, $category->toArray());
+        $response->assertStatus(200);
+    }
+
+    public function test_put_as_admin()
+    {
+        $user = User::factory()->create(['role' => 2]);
+        $category = ProductCategory::factory()->create(['is_parent' => true]);
+        $response = $this
+            ->actingAs($user)->put("/api/productCategory/" . $category->id, $category->toArray());
+        $response->assertStatus(200);
+    }
+
+    public function test_delete_deny_without_logging_in()
     {
         $category = ProductCategory::factory()->create(['is_parent' => true]);
         $response = $this
             ->delete("/api/productCategory/" . $category->id);
         $response->assertStatus(302);
+    }
 
-        $superAdmin = User::factory()->create(['role' => 1]);
+    public function test_delete_deny_as_client()
+    {
+        $user = User::factory()->create(['role' => 3]);
         $category = ProductCategory::factory()->create(['is_parent' => true]);
         $response = $this
-            ->actingAs($superAdmin)->delete("/api/productCategory/" . $category->id);
-        $response->assertStatus(200);
-
-        $admin = User::factory()->create(['role' => 2]);
-        $category = ProductCategory::factory()->create(['is_parent' => true]);
-        $response = $this
-            ->actingAs($admin)->delete("/api/productCategory/" . $category->id);
-        $response->assertStatus(200);
-
-        $client = User::factory()->create(['role' => 3]);
-        $category = ProductCategory::factory()->create(['is_parent' => true]);
-        $response = $this
-            ->actingAs($client)->delete("/api/productCategory/" . $category->id);
+            ->actingAs($user)->delete("/api/productCategory/" . $category->id);
         $response->assertStatus(302);
     }
+
+    public function test_delete_as_superadmin()
+    {
+        $user = User::factory()->create(['role' => 1]);
+        $category = ProductCategory::factory()->create(['is_parent' => true]);
+        $response = $this
+            ->actingAs($user)->delete("/api/productCategory/" . $category->id);
+        $response->assertStatus(200);
+    }
+
+
+    public function test_delete_as_admin()
+    {
+        $user = User::factory()->create(['role' => 2]);
+        $category = ProductCategory::factory()->create(['is_parent' => true]);
+        $response = $this
+            ->actingAs($user)->delete("/api/productCategory/" . $category->id);
+        $response->assertStatus(200);
+    }
+
 }

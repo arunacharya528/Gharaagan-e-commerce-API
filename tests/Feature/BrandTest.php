@@ -15,92 +15,121 @@ class BrandTest extends TestCase
      *
      * @return void
      */
-    public function test_get_all_brands_without_logging_in()
+    public function test_get_all_without_logging_in()
     {
         $response = $this->get('/api/allBrand');
         $response->assertStatus(200);
     }
 
-    public function test_get_a_single_brand_without_logging_in()
+    public function test_get_one_without_logging_in()
     {
         $brand = Brand::factory()->create();
         $response = $this->get('/api/oneBrand/' . $brand->id);
         $response->assertStatus(200);
     }
 
-    public function test_post_a_brand()
+    public function test_post_deny_without_logging_in()
     {
         $brand = Brand::factory()->create();
-
-        $superAdmin = User::factory()->create(['role' => 1]);
-        $admin = User::factory()->create(['role' => 2]);
-        $client = User::factory()->create(['role' => 3]);
-
         $response = $this
             ->post("/api/brand", $brand->toArray());
         $response->assertStatus(302);
+    }
 
+    public function test_post_deny_as_client()
+    {
+        $user = User::factory()->create(['role' => 3]);
+        $brand = Brand::factory()->create();
         $response = $this
-            ->actingAs($superAdmin)->post("/api/brand", $brand->toArray());
-        $response->assertStatus(200);
-
-        $response = $this
-            ->actingAs($admin)->post("/api/brand", $brand->toArray());
-        $response->assertStatus(200);
-
-        $response = $this
-            ->actingAs($client)->post("/api/brand", $brand->toArray());
+            ->actingAs($user)->post("/api/brand", $brand->toArray());
         $response->assertStatus(302);
     }
 
-    public function test_update_a_brand()
+    public function test_post_as_superadmin()
+    {
+        $user = User::factory()->create(['role' => 1]);
+        $brand = Brand::factory()->create();
+        $response = $this
+            ->actingAs($user)->post("/api/brand", $brand->toArray());
+        $response->assertStatus(200);
+    }
+
+    public function test_post_as_admin()
+    {
+        $user = User::factory()->create(['role' => 2]);
+        $brand = Brand::factory()->create();
+        $response = $this
+            ->actingAs($user)->post("/api/brand", $brand->toArray());
+        $response->assertStatus(200);
+    }
+
+    public function test_put_deny_without_logging_in()
     {
         $brand = Brand::factory()->create();
-
-        $superAdmin = User::factory()->create(['role' => 1]);
-        $admin = User::factory()->create(['role' => 2]);
-        $client = User::factory()->create(['role' => 3]);
-
         $response = $this
             ->put("/api/brand/" . $brand->id, $brand->toArray());
         $response->assertStatus(302);
+    }
 
+    public function test_put_deny_as_client()
+    {
+        $brand = Brand::factory()->create();
+        $user = User::factory()->create(['role' => 3]);
         $response = $this
-            ->actingAs($superAdmin)->put("/api/brand/" . $brand->id, $brand->toArray());
-        $response->assertStatus(200);
-
-        $response = $this
-            ->actingAs($admin)->put("/api/brand/" . $brand->id, $brand->toArray());
-        $response->assertStatus(200);
-
-        $response = $this
-            ->actingAs($client)->put("/api/brand/" . $brand->id, $brand->toArray());
+            ->actingAs($user)->put("/api/brand/" . $brand->id, $brand->toArray());
         $response->assertStatus(302);
     }
 
-    public function test_delete_a_brand()
+    public function test_put_as_superadmin()
+    {
+        $brand = Brand::factory()->create();
+        $user = User::factory()->create(['role' => 1]);
+        $response = $this
+            ->actingAs($user)->put("/api/brand/" . $brand->id, $brand->toArray());
+        $response->assertStatus(200);
+    }
+
+    public function test_put_as_admin()
+    {
+        $brand = Brand::factory()->create();
+        $user = User::factory()->create(['role' => 2]);
+        $response = $this
+            ->actingAs($user)->put("/api/brand/" . $brand->id, $brand->toArray());
+        $response->assertStatus(200);
+    }
+
+    public function test_delete_deny_without_logging_in()
     {
         $brand = Brand::factory()->create();
         $response = $this
             ->delete("/api/brand/" . $brand->id);
         $response->assertStatus(302);
+    }
 
+    public function test_delete_deny_as_client()
+    {
         $brand = Brand::factory()->create();
-        $superAdmin = User::factory()->create(['role' => 1]);
+        $user = User::factory()->create(['role' => 3]);
         $response = $this
-            ->actingAs($superAdmin)->delete("/api/brand/" . $brand->id);
-        $response->assertStatus(200);
-
-        $brand = Brand::factory()->create();
-        $admin = User::factory()->create(['role' => 2]);
-        $response = $this
-            ->actingAs($admin)->delete("/api/brand/" . $brand->id);
-        $response->assertStatus(200);
-
-        $brand = Brand::factory()->create();
-        $client = User::factory()->create(['role' => 3]);
-        $response = $this
-            ->actingAs($client)->delete("/api/brand/" . $brand->id);
+            ->actingAs($user)->delete("/api/brand/" . $brand->id);
         $response->assertStatus(302);
+    }
+
+    public function test_delete_as_superadmin()
+    {
+        $brand = Brand::factory()->create();
+        $user = User::factory()->create(['role' => 1]);
+        $response = $this
+            ->actingAs($user)->delete("/api/brand/" . $brand->id);
+        $response->assertStatus(200);
+    }
+
+    public function test_delete_as_admin()
+    {
+        $brand = Brand::factory()->create();
+        $user = User::factory()->create(['role' => 2]);
+        $response = $this
+            ->actingAs($user)->delete("/api/brand/" . $brand->id);
+        $response->assertStatus(200);
     }
 }
