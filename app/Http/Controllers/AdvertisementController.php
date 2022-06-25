@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Advertisement;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdvertisementController extends Controller
 {
@@ -23,10 +24,11 @@ class AdvertisementController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
+
         $advertisements = Advertisement::with('file')->get();
-        // foreach ($advertisements as $advertisement) {
-        //     $advertisement->file->full_path = env('APP_URL') . '/storage/' . $advertisement->file->path;
-        // }
         return response()->json($advertisements);
     }
 
@@ -64,6 +66,9 @@ class AdvertisementController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         $advertisement = Advertisement::create($request->all());
         return response()->json($advertisement);
     }
@@ -76,6 +81,9 @@ class AdvertisementController extends Controller
      */
     public function show(Advertisement $advertisement)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         $advertisement = Advertisement::find($advertisement->id);
         return response()->json($advertisement);
     }
@@ -100,6 +108,9 @@ class AdvertisementController extends Controller
      */
     public function update(Request $request, Advertisement $advertisement)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         $advertisement = Advertisement::find($advertisement->id);
         $advertisement->update($request->all());
         return response()->json($advertisement);
@@ -113,6 +124,9 @@ class AdvertisementController extends Controller
      */
     public function destroy(Advertisement $advertisement)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         return Advertisement::destroy($advertisement->id);
     }
 }
