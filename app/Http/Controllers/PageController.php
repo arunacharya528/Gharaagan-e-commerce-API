@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Page;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PageController extends Controller
 {
@@ -14,6 +15,9 @@ class PageController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->role !== 1) {
+            return redirect()->route('unauthorized');
+        }
         $pages = Page::get();
         return response()->json($pages);
     }
@@ -36,6 +40,9 @@ class PageController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::user()->role !== 1) {
+            return redirect()->route('unauthorized');
+        }
         $request['slug'] = implode("-", explode(" ", $request->title)) . "-" . date("ymdhis");
         $request['published'] = false;
         $page = Page::create($request->all());
@@ -51,6 +58,9 @@ class PageController extends Controller
      */
     public function show(Page $page)
     {
+        if (Auth::user()->role !== 1) {
+            return redirect()->route('unauthorized');
+        }
         $page = Page::find($page->id);
         return response()->json($page);
     }
@@ -86,6 +96,9 @@ class PageController extends Controller
      */
     public function update(Request $request, Page $page)
     {
+        if (Auth::user()->role !== 1) {
+            return redirect()->route('unauthorized');
+        }
         $page = Page::find($page->id);
         $page->update($request->all());
         return response()->json($page);
@@ -99,6 +112,9 @@ class PageController extends Controller
      */
     public function destroy(Page $page)
     {
+        if (Auth::user()->role !== 1) {
+            return redirect()->route('unauthorized');
+        }
         return Page::destroy($page->id);
     }
 }
