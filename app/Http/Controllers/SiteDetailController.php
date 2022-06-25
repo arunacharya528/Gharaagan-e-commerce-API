@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SiteDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SiteDetailController extends Controller
 {
@@ -36,8 +37,8 @@ class SiteDetailController extends Controller
      */
     public function store(Request $request)
     {
-        $detail = SiteDetail::create($request->all());
-        return response()->json($detail);
+        // $detail = SiteDetail::create($request->all());
+        // return response()->json($detail);
     }
 
     /**
@@ -48,8 +49,8 @@ class SiteDetailController extends Controller
      */
     public function show(SiteDetail $siteDetail)
     {
-        $detail = SiteDetail::find($siteDetail->id);
-        return response()->json($detail);
+        // $detail = SiteDetail::find($siteDetail->id);
+        // return response()->json($detail);
     }
 
     /**
@@ -72,6 +73,9 @@ class SiteDetailController extends Controller
      */
     public function update(Request $request, SiteDetail $siteDetail)
     {
+        if (Auth::user()->role !== 1) {
+            return redirect()->route('unauthorized');
+        }
         $detail = SiteDetail::find($siteDetail->id);
         $detail->update($request->all());
         return response()->json($detail);
@@ -85,6 +89,6 @@ class SiteDetailController extends Controller
      */
     public function destroy(SiteDetail $siteDetail)
     {
-        return SiteDetail::destroy($siteDetail->id);
+        // return SiteDetail::destroy($siteDetail->id);
     }
 }
