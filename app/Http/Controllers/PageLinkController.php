@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PageLink;
 use Database\Seeders\PageSeeder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PageLinkController extends Controller
 {
@@ -37,6 +38,9 @@ class PageLinkController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::user()->role !== 1) {
+            return redirect()->route('unauthorized');
+        }
         $link = PageLink::create($request->all());
         return response()->json($link);
     }
@@ -73,6 +77,9 @@ class PageLinkController extends Controller
      */
     public function update(Request $request, PageLink $pageLink)
     {
+        if (Auth::user()->role !== 1) {
+            return redirect()->route('unauthorized');
+        }
         $link = PageLink::find($pageLink->id);
         $link->update($request->all());
         return response()->json($link);
@@ -86,6 +93,9 @@ class PageLinkController extends Controller
      */
     public function destroy(PageLink $pageLink)
     {
+        if (Auth::user()->role !== 1) {
+            return redirect()->route('unauthorized');
+        }
         return PageLink::destroy($pageLink->id);
     }
 }
