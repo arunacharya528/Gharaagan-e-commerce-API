@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Email;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EmailController extends Controller
 {
@@ -14,6 +15,9 @@ class EmailController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         $emails = Email::get();
         return response()->json($emails);
     }
@@ -95,7 +99,7 @@ class EmailController extends Controller
      */
     public function destroy(Email $email)
     {
-        $email = Email::destroy($email->id);
-        return response()->json($email);
+        // $email = Email::destroy($email->id);
+        // return response()->json($email);
     }
 }
