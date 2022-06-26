@@ -112,6 +112,9 @@ class AuthController extends Controller
 
     public function getSession()
     {
+        if (Auth::user()->role !== 3) {
+            return redirect()->route('unauthorized');
+        }
         $user =  User::with([
             'shoppingSession.cartItems.product.images.file',
             'shoppingSession.cartItems.inventory.discount',
@@ -122,6 +125,9 @@ class AuthController extends Controller
 
     public function getOrderDetail()
     {
+        if (Auth::user()->role !== 3) {
+            return redirect()->route('unauthorized');
+        }
         $user =  User::find(Auth::user()->id);
         return response()->json($user->orderDetails);
     }
@@ -129,6 +135,9 @@ class AuthController extends Controller
 
     public function getRatings()
     {
+        if (Auth::user()->role !== 3) {
+            return redirect()->route('unauthorized');
+        }
         $user =  User::with([
             'productRatings' => function ($query) {
                 $query->with('product')->orderBy('created_at', 'desc');
@@ -139,6 +148,9 @@ class AuthController extends Controller
 
     public function getQuestionAnswers()
     {
+        if (Auth::user()->role !== 3) {
+            return redirect()->route('unauthorized');
+        }
         $user =  User::with([
             'questionAnswers' => function ($query) {
                 $query->with('product')->orderBy('created_at', 'desc');
@@ -149,6 +161,9 @@ class AuthController extends Controller
 
     public function getAddresses()
     {
+        if (Auth::user()->role !== 3) {
+            return redirect()->route('unauthorized');
+        }
         $user =  User::with([
             'addresses.delivery'
         ])->find(Auth::user()->id);
@@ -157,6 +172,9 @@ class AuthController extends Controller
 
     public function getWishList()
     {
+        if (Auth::user()->role !== 3) {
+            return redirect()->route('unauthorized');
+        }
         $user =  User::with([
             'wishlist.product' => function ($query) {
                 return $query->with(
@@ -173,6 +191,9 @@ class AuthController extends Controller
 
     public function checkout(Request $request)
     {
+        if (Auth::user()->role !== 3) {
+            return redirect()->route('unauthorized');
+        }
         DB::beginTransaction();
         $priceAfterDiscount = function ($price, $discount) {
             if ($discount === null || $discount->active === 0) {

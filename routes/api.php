@@ -49,21 +49,21 @@ use Illuminate\Support\Facades\Route;
 //
 //==================================
 
-Route::get('/allProduct', [ProductController::class, 'getAll']);
-Route::get('/oneProduct/{product}', [ProductController::class, 'show']);
-Route::get('/allCategory', [ProductCategoryController::class, 'index']);
-Route::get("/allBrand", [BrandController::class, 'index']);
-Route::get("/oneBrand/{brand}", [BrandController::class, 'show']);
-Route::get('/activeAds', [AdvertisementController::class, 'activeAdvertisement']);
-Route::get("/allSiteDetail", [SiteDetailController::class, 'index']);
-Route::get("/allPageLinks", [PageLinkController::class, 'index']);
-Route::get("/page/bySlug/{slug}", [PageController::class, 'showBySlug']);
-Route::post('/newsletter/conditionalSubscribe', [EmailController::class, 'createConditionally']);
+Route::get('/allProduct', [ProductController::class, 'getAll']); //done
+Route::get('/oneProduct/{product}', [ProductController::class, 'show']); //done
+Route::get('/allCategory', [ProductCategoryController::class, 'index']); //done
+Route::get("/allBrand", [BrandController::class, 'index']); //done
+Route::get("/oneBrand/{brand}", [BrandController::class, 'show']); //done
+Route::get('/activeAds', [AdvertisementController::class, 'activeAdvertisement']); //done
+Route::get("/allSiteDetail", [SiteDetailController::class, 'index']); //done
+Route::get("/allPageLinks", [PageLinkController::class, 'index']); //done
+Route::get("/page/bySlug/{slug}", [PageController::class, 'showBySlug']); //done
+Route::post('/newsletter/conditionalSubscribe', [EmailController::class, 'createConditionally']); //done
 Route::get('/maintainance', function () {
     return response()->json(app()->isDownForMaintenance());
 });
-
-Route::post("/login", [AuthController::class, 'login']);
+Route::post("/register", [AuthController::class, 'registerClient']); //done
+Route::post("/login", [AuthController::class, 'login']); //done
 Route::get('unauthorized', function () {
     return response()->json([
         'error' => 'Unauthorized.'
@@ -77,22 +77,22 @@ Route::get('unauthorized', function () {
 //==================================
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::resource('product', ProductController::class);
-    Route::resource('productCategory', ProductCategoryController::class);
-    Route::resource('brand', BrandController::class);
-    Route::resource('page', PageController::class);
-    Route::resource('pageLink', PageLinkController::class);
-    Route::resource("siteDetail", SiteDetailController::class);
+    Route::resource('product', ProductController::class); //done
+    Route::resource('productCategory', ProductCategoryController::class); //done
+    Route::resource('brand', BrandController::class); //done
+    Route::resource('page', PageController::class); //done
+    Route::resource('pageLink', PageLinkController::class); //done
+    Route::resource("siteDetail", SiteDetailController::class); //done
 
-    Route::get('user/session', [AuthController::class, 'getSession']);
-    Route::get('user/orders', [AuthController::class, 'getOrderDetail']);
-    Route::get('user/ratings', [AuthController::class, 'getRatings']);
-    Route::get('user/questionAnswers', [AuthController::class, 'getQuestionAnswers']);
-    Route::get('user/addresses', [AuthController::class, 'getAddresses']);
-    Route::get('user/wishlist', [AuthController::class, 'getWishList']);
-    Route::post('user/checkout', [AuthController::class, 'checkout']);
+    Route::get('user/session', [AuthController::class, 'getSession']); //done
+    Route::get('user/orders', [AuthController::class, 'getOrderDetail']); //done
+    Route::get('user/ratings', [AuthController::class, 'getRatings']); //done
+    Route::get('user/questionAnswers', [AuthController::class, 'getQuestionAnswers']); //done
+    Route::get('user/addresses', [AuthController::class, 'getAddresses']); //done
+    Route::get('user/wishlist', [AuthController::class, 'getWishList']); //done
+    Route::post('user/checkout', [AuthController::class, 'checkout']); //done
 
-    Route::resource('advertisement', AdvertisementController::class);
+    Route::resource('advertisement', AdvertisementController::class); //done
     Route::get('discount/{discountName}/find', [DiscountController::class, 'findDiscount']);
 
     Route::resource('productInventory', ProductInventoryController::class);
@@ -111,7 +111,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('productImage', ProductImageController::class);
     Route::resource('file', FileController::class);
     Route::resource('wishlist', WishlistController::class);
-    Route::resource('newsletter', EmailController::class);
+    Route::resource('newsletter', EmailController::class); //done
 
-    Route::get('/logout', [AuthController::class, 'logout']);
+    Route::get('logout', [AuthController::class, 'logout']);
 });
