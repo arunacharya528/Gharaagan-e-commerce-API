@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Discount;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DiscountController extends Controller
 {
@@ -14,6 +15,9 @@ class DiscountController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         $discount = Discount::get();
         return response()->json($discount);
     }
@@ -36,6 +40,9 @@ class DiscountController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         $discount = Discount::create($request->all());
         return response()->json($discount);
     }
@@ -48,8 +55,8 @@ class DiscountController extends Controller
      */
     public function show(Discount $discount)
     {
-        $discount = Discount::find($discount->id);
-        return response()->json($discount);
+        // $discount = Discount::find($discount->id);
+        // return response()->json($discount);
     }
 
     /**
@@ -72,6 +79,9 @@ class DiscountController extends Controller
      */
     public function update(Request $request, Discount $discount)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         $discount = Discount::find($discount->id);
         $discount->update($request->all());
         return response()->json($discount);
@@ -85,13 +95,15 @@ class DiscountController extends Controller
      */
     public function destroy(Discount $discount)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         return Discount::destroy($discount->id);
     }
 
 
     public function findDiscount($discountName)
     {
-        // dd($discount);
         $discountByName = Discount::where(['name' => $discountName]);
         if ($discountByName->exists()) {
             return response()->json($discountByName->first());
