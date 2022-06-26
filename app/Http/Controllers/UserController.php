@@ -2,23 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\Mailer;
-use App\Models\CartItem;
-use App\Models\Discount;
-use App\Models\OrderDetail;
-use App\Models\OrderItem;
-use App\Models\ProductInventory;
-use App\Models\ShoppingSession;
 use App\Models\User;
-use App\Models\UserAddress;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -29,6 +15,9 @@ class UserController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->role !== 1) {
+            return redirect()->route('unauthorized');
+        }
         $user = User::withCount('hasNewsletter')->get();
         return response()->json($user);
     }
@@ -51,6 +40,9 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::user()->role !== 1) {
+            return redirect()->route('unauthorized');
+        }
         $user = User::create($request->all());
         return response()->json($user);
     }
@@ -63,9 +55,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        // if ($user->id !== Auth::user()->id) {
-        //     return redirect()->route('unauthorized');
-        // }
+        if (Auth::user()->role !== 1) {
+            return redirect()->route('unauthorized');
+        }
         $user = User::with([
             'shoppingSession.cartItems.product.images.file',
             'shoppingSession.cartItems.inventory.discount',
@@ -106,44 +98,6 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        if ($user->id !== Auth::user()->id) {
-            return redirect()->route('unauthorized');
-        }
-
-        $user = User::find($user->id);
-
-        $rule = [];
-
-        if ($request->first_name !== null || $request->last_name !== null || $request->contact !== null) {
-            $rule['first_name'] = 'required';
-            $rule['last_name'] = 'required';
-            $rule['contact'] = 'required';
-        }
-
-        if ($request->email !== null) {
-            $rule['email'] = 'email:rfc,dns|unique:users,email,' . $user->id;
-        }
-
-        if ($request->password !== null || $request->password_confirmation !== null) {
-            $rule['password'] = ['required', 'confirmed', Password::min(8)
-                ->letters()
-                ->mixedCase()
-                ->numbers()
-                ->symbols()
-                ->uncompromised()];
-        }
-
-        $validator = Validator::make($request->all(), $rule);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        }
-        try {
-            $user->update($request->all());
-        } catch (\Throwable $th) {
-            return response()->json([['message' => 'Given fields must be filled']], 400);
-        }
-        return response()->json($user);
     }
 
     /**
@@ -154,7 +108,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        if (Auth::user()->role !== 1 || $user->role === 1) {
+            return redirect()->route('unauthorized');
+        }
         return User::destroy($user->id);
     }
-
 }
