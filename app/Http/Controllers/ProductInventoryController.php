@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductInventory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductInventoryController extends Controller
 {
@@ -14,6 +15,9 @@ class ProductInventoryController extends Controller
      */
     public function index(Request $request)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         $inventories = ProductInventory::with('discount');
         if ($request->input('product_id') !== null) {
             $inventories = $inventories->where('product_id', $request->input('product_id'))->get();
@@ -42,6 +46,9 @@ class ProductInventoryController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         $inventory = ProductInventory::create($request->all());
         return response()->json($inventory);
     }
@@ -54,8 +61,8 @@ class ProductInventoryController extends Controller
      */
     public function show(ProductInventory $productInventory)
     {
-        $inventory = ProductInventory::find($productInventory->id);
-        return response()->json($inventory);
+        // $inventory = ProductInventory::find($productInventory->id);
+        // return response()->json($inventory);
     }
 
     /**
@@ -78,6 +85,9 @@ class ProductInventoryController extends Controller
      */
     public function update(Request $request, ProductInventory $productInventory)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         $inventory = ProductInventory::find($productInventory->id);
         $inventory->update($request->all());
         return response()->json($inventory);
@@ -91,6 +101,9 @@ class ProductInventoryController extends Controller
      */
     public function destroy(ProductInventory $productInventory)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         return ProductInventory::destroy($productInventory->id);
     }
 }
