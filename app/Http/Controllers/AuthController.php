@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Passport\Bridge\RefreshTokenRepository;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -81,7 +82,7 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->first();
 
             return response()->json([
-                'status' => true,
+                'role' => $user->role,
                 'message' => 'User Logged In Successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken
             ], 200);
@@ -93,6 +94,15 @@ class AuthController extends Controller
         }
     }
 
+    public function getIfLoggedIn(Request $request)
+    {
+        $token = PersonalAccessToken::findToken($request->input('token'));
+        if ($token) {
+            return response()->json($token->tokenable);
+        } else {
+            return response("Unauthorized", 404);
+        }
+    }
 
     public function logout(Request $request)
     {

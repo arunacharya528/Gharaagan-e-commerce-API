@@ -64,6 +64,7 @@ Route::get('/maintainance', function () {
 });
 Route::post("/register", [AuthController::class, 'registerClient']); //done
 Route::post("/login", [AuthController::class, 'login']); //done
+Route::post("/get-if-logged-in",[AuthController::class, 'getIfLoggedIn']);
 Route::get('unauthorized', function () {
     return response()->json([
         'error' => 'Unauthorized.'
@@ -93,13 +94,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('user/checkout', [AuthController::class, 'checkout']); //done
 
     Route::resource('advertisement', AdvertisementController::class); //done
-    Route::get('discount/{discountName}/find', [DiscountController::class, 'findDiscount']);
+    Route::get('discount/{discountName}/find', [DiscountController::class, 'findDiscount']); //done
 
-    Route::resource('productInventory', ProductInventoryController::class);
-    Route::resource('discount', DiscountController::class);
-    Route::resource('user', UserController::class);
-    Route::resource('userAddress', UserAddressController::class);
-    Route::resource('shoppingSession', ShoppingSessionController::class);
+    Route::resource('productInventory', ProductInventoryController::class); //done
+    Route::resource('discount', DiscountController::class); //done
+    Route::resource('user', UserController::class); //done
+    Route::resource('userAddress', UserAddressController::class);//disintegrate and allow for auth user only
+    Route::resource('shoppingSession', ShoppingSessionController::class);//done
     Route::resource('cartItem', CartItemController::class);
 
     Route::delete('orderDetail/{orderDetail}/cancel', [OrderDetailController::class, 'cancelOrder']);
