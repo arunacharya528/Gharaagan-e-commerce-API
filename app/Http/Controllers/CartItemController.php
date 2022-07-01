@@ -19,8 +19,8 @@ class CartItemController extends Controller
      */
     public function index()
     {
-        $item = CartItem::get();
-        return response()->json($item);
+        // $item = CartItem::get();
+        // return response()->json($item);
     }
 
     /**
@@ -41,14 +41,9 @@ class CartItemController extends Controller
      */
     public function store(Request $request)
     {
-
-        // if (ShoppingSession::find($request->session_id)->user->id !== Auth::user()->id) {
-        //     return redirect()->route('unauthorized');
-        // }
-
-        // if (ProductInventory::find($request->inventory_id)->quantity < (int)$request->quantity) {
-        //     return response()->json(['error' => 'Your quantity is more than existing quantity'], 500);
-        // }
+        if (Auth::user()->role !== 3) {
+            return redirect()->route('unauthorized');
+        }
 
         $item  = CartItem::where(['product_id' => $request->product_id, 'session_id' => $request->session_id, 'inventory_id' => $request->inventory_id]);
         if ($item->exists()) {
@@ -69,8 +64,8 @@ class CartItemController extends Controller
      */
     public function show(CartItem $cartItem)
     {
-        $item = CartItem::find($cartItem->id);
-        return response()->json($item);
+        // $item = CartItem::find($cartItem->id);
+        // return response()->json($item);
     }
 
     /**
@@ -93,6 +88,10 @@ class CartItemController extends Controller
      */
     public function update(Request $request, CartItem $cartItem)
     {
+        if (Auth::user()->role !== 3) {
+            return redirect()->route('unauthorized');
+        }
+
         $item = CartItem::find($cartItem->id);
         $item->update($request->all());
         return response()->json($item);
@@ -106,32 +105,9 @@ class CartItemController extends Controller
      */
     public function destroy(CartItem $cartItem)
     {
-        // if (CartItem::find($cartItem->id)->shoppingSession->user->id != Auth::user()->id) {
-        //     return redirect()->route('unauthorized');
-        // }
-
+        if (Auth::user()->role === 2) {
+            return redirect()->route('unauthorized');
+        }
         return CartItem::destroy($cartItem->id);
-    }
-
-    public function deleteBySession($session_id)
-    {
-        $session = ShoppingSession::find($session_id);
-        if ($session->user->id !== Auth::user()->id) {
-            return redirect()->route('unauthorized');
-        }
-        $cartItems = CartItem::where('session_id', $session_id)->delete();
-        return response()->json($cartItems);
-    }
-
-    public function getBySessionAndProduct($session_id, $product_id)
-    {
-        if (ShoppingSession::find($session_id)->user->id !== Auth::user()->id) {
-            return redirect()->route('unauthorized');
-        }
-
-        return CartItem::where([
-            'session_id' => $session_id,
-            'product_id' => $product_id
-        ])->first();
     }
 }
