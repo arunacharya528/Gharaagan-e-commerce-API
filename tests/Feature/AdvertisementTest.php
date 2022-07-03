@@ -102,7 +102,7 @@ class AdvertisementTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_put_deny_as_admin()
+    public function test_put_as_admin()
     {
         $data = Advertisement::factory()->create();
         $user = User::factory()->create(['role' => 2]);
@@ -110,14 +110,14 @@ class AdvertisementTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_delete_without_logging_in()
+    public function test_delete_deny_without_logging_in()
     {
         $data = Advertisement::factory()->create();
         $response = $this->delete('/api/advertisement/' . $data->id);
         $response->assertStatus(302);
     }
 
-    public function test_delete_as_client()
+    public function test_delete_deny_as_client()
     {
         $data = Advertisement::factory()->create();
         $user = User::factory()->create(['role' => 3]);
