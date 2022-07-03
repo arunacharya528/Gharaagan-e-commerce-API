@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,6 +17,9 @@ class FileController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         $files = File::withCount(['productImages', 'brands', 'advertisements'])->get();
         return response()->json($files);
     }
@@ -38,6 +42,9 @@ class FileController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         DB::beginTransaction();
 
         try {
@@ -101,6 +108,9 @@ class FileController extends Controller
      */
     public function destroy(File $file)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         // dd("app/public/" . $file->path);
         unlink(storage_path('app/public/' . $file->path));
         return File::destroy($file->id);
