@@ -15,6 +15,9 @@ class QuestionAnswerController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         $qas = QuestionAnswer::with([
             'user',
             'product'
@@ -44,8 +47,8 @@ class QuestionAnswerController extends Controller
         // if ($request->user_id !== Auth::user()->id) {
         //     return redirect()->route("unauthorized");
         // }
-        $qa = QuestionAnswer::create($request->all());
-        return response()->json($qa);
+        // $qa = QuestionAnswer::create($request->all());
+        // return response()->json($qa);
     }
 
     /**
@@ -56,8 +59,8 @@ class QuestionAnswerController extends Controller
      */
     public function show(QuestionAnswer $questionAnswer)
     {
-        $qa = QuestionAnswer::find($questionAnswer->id);
-        return response()->json($qa);
+        // $qa = QuestionAnswer::find($questionAnswer->id);
+        // return response()->json($qa);
     }
 
     /**
@@ -80,6 +83,9 @@ class QuestionAnswerController extends Controller
      */
     public function update(Request $request, QuestionAnswer $questionAnswer)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         $qa = QuestionAnswer::find($questionAnswer->id);
         $qa->update($request->all());
         return response()->json($qa);
@@ -93,8 +99,9 @@ class QuestionAnswerController extends Controller
      */
     public function destroy(QuestionAnswer $questionAnswer)
     {
-        // Delete with respective parentid
-        // QuestionAnswer::where(['parent_id' => $questionAnswer->id])->delete();
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         return QuestionAnswer::destroy($questionAnswer->id);
     }
 }
