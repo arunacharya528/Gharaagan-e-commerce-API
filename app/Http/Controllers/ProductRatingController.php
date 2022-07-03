@@ -15,6 +15,10 @@ class ProductRatingController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
+
         $rating = ProductRating::with([
             'user', 'product', 'orderDetail'
         ])->orderBy('created_at', 'desc')->get();
@@ -42,8 +46,8 @@ class ProductRatingController extends Controller
         // if ($request->user_id !== Auth::user()->id) {
         //     return redirect()->route("unauthorized");
         // }
-        $rating = ProductRating::create($request->all());
-        return response()->json($rating);
+        // $rating = ProductRating::create($request->all());
+        // return response()->json($rating);
     }
 
     /**
@@ -54,8 +58,8 @@ class ProductRatingController extends Controller
      */
     public function show(ProductRating $productRating)
     {
-        $rating = ProductRating::find($productRating->id);
-        return response()->json($rating);
+        // $rating = ProductRating::find($productRating->id);
+        // return response()->json($rating);
     }
 
     /**
@@ -78,9 +82,9 @@ class ProductRatingController extends Controller
      */
     public function update(Request $request, ProductRating $productRating)
     {
-        $rating = ProductRating::find($productRating->id);
-        $rating->update($request->all());
-        return response()->json($rating);
+        // $rating = ProductRating::find($productRating->id);
+        // $rating->update($request->all());
+        // return response()->json($rating);
     }
 
     /**
@@ -91,6 +95,9 @@ class ProductRatingController extends Controller
      */
     public function destroy(ProductRating $productRating)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         return ProductRating::destroy($productRating->id);
     }
 
@@ -108,8 +115,8 @@ class ProductRatingController extends Controller
 
         if ($rated) {
             return response()->json("Found");
-        }else{
-            return response()->json("Not Found",204);
+        } else {
+            return response()->json("Not Found", 204);
         }
     }
 }
