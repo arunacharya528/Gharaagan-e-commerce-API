@@ -21,6 +21,9 @@ class OrderDetailController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         $order = OrderDetail::with([
             'orderItems',
             'orderItems.product',
@@ -50,8 +53,8 @@ class OrderDetailController extends Controller
      */
     public function store(Request $request)
     {
-        $order = OrderDetail::create($request->all());
-        return response()->json($order);
+        // $order = OrderDetail::create($request->all());
+        // return response()->json($order);
     }
 
     /**
@@ -62,19 +65,19 @@ class OrderDetailController extends Controller
      */
     public function show(OrderDetail $orderDetail)
     {
-        $orderUser = OrderDetail::with('user')->find($orderDetail->id);
+        // $orderUser = OrderDetail::with('user')->find($orderDetail->id);
 
-        $order = OrderDetail::with([
-            'orderItems.product.ratings' => function ($query) use ($orderUser) {
-                $query->where('user_id', $orderUser->user->id)->get();
-            },
-            'orderItems.product.images.file',
-            'orderItems.inventory.discount',
-            'address.delivery',
-            'discount',
-        ])->find($orderDetail->id);
+        // $order = OrderDetail::with([
+        //     'orderItems.product.ratings' => function ($query) use ($orderUser) {
+        //         $query->where('user_id', $orderUser->user->id)->get();
+        //     },
+        //     'orderItems.product.images.file',
+        //     'orderItems.inventory.discount',
+        //     'address.delivery',
+        //     'discount',
+        // ])->find($orderDetail->id);
 
-        return response()->json($order);
+        // return response()->json($order);
     }
 
     /**
@@ -97,6 +100,9 @@ class OrderDetailController extends Controller
      */
     public function update(Request $request, OrderDetail $orderDetail)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         $order = OrderDetail::find($orderDetail->id);
         $order->update($request->all());
         return response()->json($order);
@@ -110,6 +116,9 @@ class OrderDetailController extends Controller
      */
     public function destroy(OrderDetail $orderDetail)
     {
+        if (Auth::user()->role === 3) {
+            return redirect()->route('unauthorized');
+        }
         DB::beginTransaction();
         try {
             OrderItem::where(['order_id' => $orderDetail->id])->delete();
@@ -187,6 +196,10 @@ class OrderDetailController extends Controller
             'address.delivery',
             'discount',
         ])->find($orderDetail->id);
+
+        if (Auth::user()->role === 3 && Auth::user()->id !== $order->user_id) {
+            return redirect()->route('unauthorized');
+        }
 
         $pdf = Pdf::loadView('invoice', ['orderDetail' => $order])->setPaper('a4', 'landscape');
         return $pdf->stream('demo.pdf');
