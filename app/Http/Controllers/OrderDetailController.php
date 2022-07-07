@@ -202,7 +202,7 @@ class OrderDetailController extends Controller
         }
 
         $pdf = Pdf::loadView('invoice', ['orderDetail' => $order])->setPaper('a4', 'landscape');
-        return $pdf->stream('demo.pdf');
+        return $pdf->stream('invoice.pdf');
     }
 
     // public function hasOrdered(Request $request)
