@@ -34,6 +34,10 @@ class User extends Authenticatable
         'password'
     ];
 
+    protected $casts = [
+        'role' => 'int'
+    ];
+
     public function shoppingSession()
     {
         return $this->hasOne(ShoppingSession::class, 'user_id');
