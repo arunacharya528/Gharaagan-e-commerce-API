@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\File;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -48,15 +49,18 @@ class FileController extends Controller
         DB::beginTransaction();
 
         try {
-            $status = Storage::disk('public')->put('', $request->file('file'));
+            $path = Storage::disk('public')->put("", $request->file('file'));
+            if (!Storage::disk('public')->exists($path)) {
+                throw new Exception("File not saved");
+            }
             $file = File::create([
                 'name' => $request->name,
-                'path' => ($status)
+                'path' => ($path)
             ]);
         } catch (\Throwable $th) {
             error_log($th->getMessage());
             DB::rollBack();
-            return response()->json(['error' => "There was an error storing file"], 500);
+            return response()->json(['error' => $th->getMessage()], 500);
         }
         DB::commit();
 
