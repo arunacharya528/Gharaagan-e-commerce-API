@@ -50,4 +50,4 @@ Route::get("/view/mailTemplate", function () {
 
 Route::post("/sendmail", [MailController::class, 'sendMail']);
 
-Route::get("/view/invoice/{orderDetail}", [OrderDetailController::class, 'streamInvoice']);
+Route::get("/view/invoice/{orderDetail}", [OrderDetailController::class, 'streamInvoice'])->middleware(["auth:sanctum"]);
