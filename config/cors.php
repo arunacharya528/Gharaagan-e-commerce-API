@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['https://gharagan-admin-client.arunacharya3.repl.co', '*'],
 
     'allowed_origins_patterns' => [],
 
