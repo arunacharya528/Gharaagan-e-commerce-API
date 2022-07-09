@@ -70,9 +70,9 @@ class UserController extends Controller
             'productRatings.product',
             'productRatings.user',
             'productRatings.orderDetail',
-            'questionAnswers.answers',
-            'questionAnswers.user',
-            'questionAnswers.product'
+            'questionAnswers' => function ($query) {
+                $query->with(['product', 'user'])->orderBy('created_at', 'desc');
+            }
 
         ])->where('id', $user->id)->first();
         return response()->json($user);
