@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Delivery;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DeliveryController extends Controller
 {
@@ -36,6 +37,9 @@ class DeliveryController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::user()->role !== 1) {
+            return redirect()->route('unauthorized');
+        }
         $delivery = Delivery::create($request->all());
         return response()->json($delivery);
     }
@@ -71,6 +75,9 @@ class DeliveryController extends Controller
      */
     public function update(Request $request, Delivery $delivery)
     {
+        if (Auth::user()->role !== 1) {
+            return redirect()->route('unauthorized');
+        }
         $delivery = Delivery::find($delivery->id);
         $delivery->update($request->all());
         return response()->json($delivery);
@@ -84,6 +91,9 @@ class DeliveryController extends Controller
      */
     public function destroy(Delivery $delivery)
     {
+        if (Auth::user()->role !== 1) {
+            return redirect()->route('unauthorized');
+        }
         return Delivery::destroy($delivery->id);
     }
 }
