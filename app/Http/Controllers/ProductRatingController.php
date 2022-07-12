@@ -43,11 +43,9 @@ class ProductRatingController extends Controller
      */
     public function store(Request $request)
     {
-        // if ($request->user_id !== Auth::user()->id) {
-        //     return redirect()->route("unauthorized");
-        // }
-        // $rating = ProductRating::create($request->all());
-        // return response()->json($rating);
+        $request['user_id'] = Auth::user()->id;
+        $rating = ProductRating::create($request->all());
+        return response()->json($rating);
     }
 
     /**
@@ -95,28 +93,28 @@ class ProductRatingController extends Controller
      */
     public function destroy(ProductRating $productRating)
     {
-        if (Auth::user()->role === 3) {
+        if (Auth::user()->role === 3 && $productRating->user_id !== Auth::user()->id) {
             return redirect()->route('unauthorized');
         }
         return ProductRating::destroy($productRating->id);
     }
 
 
-    public function hasRated(Request $request)
-    {
-        if (!$request->exists('user_id') || !$request->exists('product_id')) {
-            return response()->json("User id and product id required", 500);
-        }
-        $rated = ProductRating::where([
-            'user_id' => $request->input('user_id'),
-            'product_id' => $request->input('product_id')
+    // public function hasRated(Request $request)
+    // {
+    //     if (!$request->exists('user_id') || !$request->exists('product_id')) {
+    //         return response()->json("User id and product id required", 500);
+    //     }
+    //     $rated = ProductRating::where([
+    //         'user_id' => $request->input('user_id'),
+    //         'product_id' => $request->input('product_id')
 
-        ])->exists();
+    //     ])->exists();
 
-        if ($rated) {
-            return response()->json("Found");
-        } else {
-            return response()->json("Not Found", 204);
-        }
-    }
+    //     if ($rated) {
+    //         return response()->json("Found");
+    //     } else {
+    //         return response()->json("Not Found", 204);
+    //     }
+    // }
 }

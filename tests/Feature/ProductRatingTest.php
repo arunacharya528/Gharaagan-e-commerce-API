@@ -49,12 +49,21 @@ class ProductRatingTest extends TestCase
         $response->assertStatus(302);
     }
 
-    public function test_delete_deny_as_client()
+    public function test_delete_deny_as_unauthorized_client()
     {
         $user = User::factory()->create(['role' => 3]);
-        $data = ProductRating::factory()->create();
+        $newUser = User::factory()->create(['role' => 3]);
+        $data = ProductRating::factory()->create(['user_id' => $newUser->id]);
         $response = $this->actingAs($user)->delete('/api/productRating/' . $data->id);
         $response->assertStatus(302);
+    }
+
+    public function test_delete_as_authorized_client()
+    {
+        $user = User::factory()->create(['role' => 3]);
+        $data = ProductRating::factory()->create(['user_id' => $user->id]);
+        $response = $this->actingAs($user)->delete('/api/productRating/' . $data->id);
+        $response->assertStatus(200);
     }
 
     public function test_delete_as_admin()
