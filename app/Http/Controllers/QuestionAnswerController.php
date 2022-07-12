@@ -44,11 +44,12 @@ class QuestionAnswerController extends Controller
      */
     public function store(Request $request)
     {
-        // if ($request->user_id !== Auth::user()->id) {
-        //     return redirect()->route("unauthorized");
-        // }
-        // $qa = QuestionAnswer::create($request->all());
-        // return response()->json($qa);
+        if (Auth::user()->role !== 3) {
+            return redirect()->route("unauthorized");
+        }
+        $request['user_id'] = Auth::user()->id;
+        $qa = QuestionAnswer::create($request->all());
+        return response()->json($qa);
     }
 
     /**
@@ -99,7 +100,7 @@ class QuestionAnswerController extends Controller
      */
     public function destroy(QuestionAnswer $questionAnswer)
     {
-        if (Auth::user()->role === 3) {
+        if (Auth::user()->role === 3 && $questionAnswer->user_id !== Auth::user()->id) {
             return redirect()->route('unauthorized');
         }
         return QuestionAnswer::destroy($questionAnswer->id);

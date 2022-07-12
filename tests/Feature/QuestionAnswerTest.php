@@ -42,6 +42,37 @@ class QuestionAnswerTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function test_post_demy_without_logging_in()
+    {
+        $data = QuestionAnswer::factory()->create();
+        $response = $this->post('/api/questionAnswer', $data->toArray());
+        $response->assertStatus(302);
+    }
+
+    public function test_post_as_client()
+    {
+        $user = User::factory()->create(['role' => 3]);
+        $data = QuestionAnswer::factory()->create();
+        $response = $this->actingAs($user)->post('/api/questionAnswer', $data->toArray());
+        $response->assertStatus(200);
+    }
+
+    public function test_post_deny_as_admin()
+    {
+        $user = User::factory()->create(['role' => 2]);
+        $data = QuestionAnswer::factory()->create();
+        $response = $this->actingAs($user)->post('/api/questionAnswer', $data->toArray());
+        $response->assertStatus(302);
+    }
+
+    public function test_post_deny_as_superadmin()
+    {
+        $user = User::factory()->create(['role' => 1]);
+        $data = QuestionAnswer::factory()->create();
+        $response = $this->actingAs($user)->post('/api/questionAnswer', $data->toArray());
+        $response->assertStatus(302);
+    }
+
     public function test_put_deny_without_logging_in()
     {
         $data = QuestionAnswer::factory()->create();
@@ -73,18 +104,28 @@ class QuestionAnswerTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_delete_deny_without_logging_in(){
+    public function test_delete_deny_without_logging_in()
+    {
         $data = QuestionAnswer::factory()->create();
         $response = $this->delete('/api/questionAnswer/' . $data->id);
         $response->assertStatus(302);
     }
 
-    public function test_delete_deny_as_client()
+    public function test_delete_deny_as_unauthorized_client()
     {
         $user = User::factory()->create(['role' => 3]);
-        $data = QuestionAnswer::factory()->create();
+        $newUser = User::factory()->create(['role' => 3]);
+        $data = QuestionAnswer::factory()->create(['user_id' => $newUser->id]);
         $response = $this->actingAs($user)->delete('/api/questionAnswer/' . $data->id);
         $response->assertStatus(302);
+    }
+
+    public function test_delete_as_authorized_client()
+    {
+        $user = User::factory()->create(['role' => 3]);
+        $data = QuestionAnswer::factory()->create(['user_id' => $user->id]);
+        $response = $this->actingAs($user)->delete('/api/questionAnswer/' . $data->id);
+        $response->assertStatus(200);
     }
 
     public function test_delete_as_admin()
