@@ -133,34 +133,16 @@ class OrderDetailController extends Controller
         return response()->json("Successfully deleted order and its items");
     }
 
-    // /**
-    //  * Get order detail by user id
-    //  */
-    // public function getByUser($user_id)
-    // {
-    //     if (User::find($user_id)->id !== Auth::user()->id) {
-    //         return redirect()->route('unauthorized');
-    //     }
-
-    //     $orderDetail = User::with('orderDetails.orderItems.product.inventory')
-    //         ->with('orderDetails.orderItems.product.discount')
-    //         ->with('orderDetails.orderItems.product.category')
-    //         ->with('orderDetails.orderItems.product.brand')
-    //         ->with('orderDetails.orderItems.product.images')
-
-    //         ->find($user_id);
-
-    //     return response()->json($orderDetail);
-    // }
 
     /**
      * Cancels order and all of its components
      */
     public function cancelOrder(OrderDetail $orderDetail)
     {
-        // if (OrderDetail::find($order_id)->user->id !== Auth::user()->id) {
-        //     return redirect()->route('unauthorized');
-        // }
+        if (Auth::user()->role === 3 && Auth::user()->id !== $orderDetail->user_id) {
+            return redirect()->route('unauthorized');
+        }
+
         DB::beginTransaction();
         try {
             // getting all ordering items
@@ -204,23 +186,4 @@ class OrderDetailController extends Controller
         $pdf = Pdf::loadView('invoice', ['orderDetail' => $order])->setPaper('a4', 'landscape');
         return $pdf->stream('invoice.pdf');
     }
-
-    // public function hasOrdered(Request $request)
-    // {
-    //     if (!$request->exists('user_id') || !$request->exists('product_id')) {
-    //         return response()->json("User id and product id required", 500);
-    //     }
-
-    //     $orderDetail = OrderDetail::where(
-    //         [
-    //             'user_id' => $request->input('user_id'),
-    //         ]
-    //     )->with(['orderItems'])->get();
-
-    //     if ($orderDetail->contains('product_id', $request->input('product_id'))) {
-    //         return response()->json("Found");
-    //     } else {
-    //         return response()->json("Not Found", 204);
-    //     }
-    // }
 }

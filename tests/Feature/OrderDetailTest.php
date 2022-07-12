@@ -104,7 +104,84 @@ class OrderDetailTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_cancel_without_loggin_in(){
-
+    public function test_cancel_deny_without_loggin_in()
+    {
+        $data = OrderDetail::factory()->create();
+        $response = $this->delete('/api/orderDetail/' . $data->id . "/cancel");
+        $response->assertStatus(302);
     }
+
+    public function test_cancel_deny_as_unauthorized_client()
+    {
+        $user = User::factory()->create(['role' => 3]);
+        $newUser = User::factory()->create(['role' => 3]);
+        $data = OrderDetail::factory()->create(['user_id' => $newUser->id]);
+
+        $response = $this->actingAs($user)->delete('/api/orderDetail/' . $data->id . "/cancel");
+        $response->assertStatus(302);
+    }
+
+    public function test_cancel_as_authorized_client()
+    {
+        $user = User::factory()->create(['role' => 3]);
+        $data = OrderDetail::factory()->create(['user_id' => $user->id]);
+        $response = $this->actingAs($user)->delete('/api/orderDetail/' . $data->id . "/cancel");
+        $response->assertStatus(200);
+    }
+
+    public function test_cancel_as_admin()
+    {
+        $user = User::factory()->create(['role' => 2]);
+        $data = OrderDetail::factory()->create();
+        $response = $this->actingAs($user)->delete('/api/orderDetail/' . $data->id . "/cancel");
+        $response->assertStatus(200);
+    }
+
+    public function test_cancel_as_superadmin()
+    {
+        $user = User::factory()->create(['role' => 1]);
+        $data = OrderDetail::factory()->create();
+        $response = $this->actingAs($user)->delete('/api/orderDetail/' . $data->id . "/cancel");
+        $response->assertStatus(200);
+    }
+
+    public function test_get_deny_invoice_without_logging_in()
+    {
+        $data = OrderDetail::factory()->create();
+        $response = $this->get('/view/invoice/' . $data->id);
+        $response->assertStatus(302);
+    }
+
+    public function test_get_deny_invoice_as_unauthorized_client()
+    {
+        $user = User::factory()->create(['role' => 3]);
+        $newUser = User::factory()->create(['role' => 3]);
+        $data = OrderDetail::factory()->create(['user_id' => $newUser->id]);
+        $response = $this->actingAs($user)->get('/view/invoice/' . $data->id);
+        $response->assertStatus(302);
+    }
+
+    public function test_get_invoice_as_authorized_client(){
+        $user = User::factory()->create(['role' => 3]);
+        $data = OrderDetail::factory()->create(['user_id' => $user->id]);
+        $response = $this->actingAs($user)->get('/view/invoice/' . $data->id);
+        $response->assertStatus(200);
+    }
+
+    public function test_get_invoice_as_admin()
+    {
+        $user = User::factory()->create(['role' => 2]);
+        $data = OrderDetail::factory()->create();
+        $response = $this->actingAs($user)->get('/view/invoice/' . $data->id);
+        $response->assertStatus(200);
+    }
+
+    public function test_get_invoice_as_superadmin()
+    {
+        $user = User::factory()->create(['role' => 1]);
+        $data = OrderDetail::factory()->create();
+        $response = $this->actingAs($user)->get('/view/invoice/' . $data->id);
+        $response->assertStatus(200);
+    }
+
 }
