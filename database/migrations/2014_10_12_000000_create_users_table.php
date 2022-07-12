@@ -27,12 +27,29 @@ class CreateUsersTable extends Migration
 
         $defaultUserData = [
             [
-                'name' => "Admin",
+                'name' => "Super Admin",
                 'email' => "superadmin@gharagan.com",
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
                 'contact' => "123456789",
                 'role' => 1
-            ]
+            ],
+
+            [
+                'name' => "Admin",
+                'email' => "admin@gharagan.com",
+                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+                'contact' => "123456789",
+                'role' => 2
+            ],
+
+            [
+                'name' => "Client",
+                'email' => "client@gharagan.com",
+                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+                'contact' => "123456789",
+                'role' => 3
+            ],
+
         ];
 
         User::insert($defaultUserData);
