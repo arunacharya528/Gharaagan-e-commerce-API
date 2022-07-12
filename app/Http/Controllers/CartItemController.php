@@ -45,7 +45,12 @@ class CartItemController extends Controller
             return redirect()->route('unauthorized');
         }
 
-        $item  = CartItem::where(['product_id' => $request->product_id, 'session_id' => $request->session_id, 'inventory_id' => $request->inventory_id]);
+        $item  = CartItem::where([
+            'product_id' => $request->product_id,
+            'session_id' => Auth::user()->shoppingSession->id,
+            'inventory_id' => $request->inventory_id
+        ]);
+
         if ($item->exists()) {
             $item = $item->first();
             $item->quantity = $request->quantity +  $item->quantity;
@@ -93,6 +98,11 @@ class CartItemController extends Controller
         }
 
         $item = CartItem::find($cartItem->id);
+
+        if ($item->shoppingSession->id !== Auth::user()->shoppingSession->id) {
+            return redirect()->route('unauthorized');
+        }
+
         $item->update($request->all());
         return response()->json($item);
     }
@@ -108,6 +118,11 @@ class CartItemController extends Controller
         if (Auth::user()->role === 2) {
             return redirect()->route('unauthorized');
         }
+
+        if (Auth::user()->role === 3 && $cartItem->shoppingSession->id !== Auth::user()->shoppingSession->id) {
+            return redirect()->route('unauthorized');
+        }
+
         return CartItem::destroy($cartItem->id);
     }
 }
