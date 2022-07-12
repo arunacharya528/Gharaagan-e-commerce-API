@@ -23,8 +23,6 @@ use App\Http\Controllers\SiteDetailController;
 use App\Http\Controllers\UserAddressController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
-use App\Models\ProductRating;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -63,8 +61,8 @@ Route::get('/maintainance', function () {
     return response()->json(app()->isDownForMaintenance());
 });
 Route::post("/register", [AuthController::class, 'registerClient']); //done
-Route::post("/login", [AuthController::class, 'login']); //done
-Route::post("/get-if-logged-in",[AuthController::class, 'getIfLoggedIn']);
+Route::post("/login", [AuthController::class, 'login'])->name('login'); //done
+Route::post("/get-if-logged-in", [AuthController::class, 'getIfLoggedIn']);
 Route::get('unauthorized', function () {
     return response()->json([
         'error' => 'Unauthorized.'
@@ -99,20 +97,23 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('productInventory', ProductInventoryController::class); //done
     Route::resource('discount', DiscountController::class); //done
     Route::resource('user', UserController::class); //done
-    Route::resource('userAddress', UserAddressController::class);//disintegrate and allow for auth user only
-    Route::resource('shoppingSession', ShoppingSessionController::class);//done
-    Route::resource('cartItem', CartItemController::class);
+    Route::resource('userAddress', UserAddressController::class); //disintegrate and allow for auth user only
+    Route::resource('shoppingSession', ShoppingSessionController::class); //done
+    Route::resource('cartItem', CartItemController::class);//donw
 
-    Route::delete('orderDetail/{orderDetail}/cancel', [OrderDetailController::class, 'cancelOrder']);
-    Route::resource('orderDetail', OrderDetailController::class);
+    Route::delete('orderDetail/{orderDetail}/cancel', [OrderDetailController::class, 'cancelOrder']);//donw
+    Route::get("/orderDetail/{orderDetail}/invoice", [OrderDetailController::class, 'streamInvoice']);//donw
+    Route::resource('orderDetail', OrderDetailController::class);//donw
 
-    Route::resource('orderItem', OrderItemController::class);
-    Route::resource('productRating', ProductRatingController::class);
+    // Route::resource('orderItem', OrderItemController::class);
+    Route::resource('productRating', ProductRatingController::class); //done
+
     Route::resource('questionAnswer', QuestionAnswerController::class);
-    Route::resource('productImage', ProductImageController::class);
-    Route::resource('file', FileController::class);
-    Route::resource('wishlist', WishlistController::class);
+    Route::resource('productImage', ProductImageController::class); //done
+    Route::resource('file', FileController::class); //done
+    Route::resource('wishlist', WishlistController::class);//done
     Route::resource('newsletter', EmailController::class); //done
+    Route::resource('delivery', DeliveryController::class);//done
 
     Route::get('logout', [AuthController::class, 'logout']);
 });
