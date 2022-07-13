@@ -16,8 +16,8 @@ class UserAddressController extends Controller
      */
     public function index()
     {
-        $userAddresses = UserAddress::get();
-        return response()->json($userAddresses);
+        // $userAddresses = UserAddress::get();
+        // return response()->json($userAddresses);
     }
 
     /**
@@ -38,6 +38,12 @@ class UserAddressController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::user()->role !== 3) {
+            return redirect()->route('unauthorized');
+        }
+
+        $request['user_id'] = Auth::user()->id;
+
         $userAddress = UserAddress::create($request->all());
         return response()->json($userAddress);
     }
@@ -50,8 +56,8 @@ class UserAddressController extends Controller
      */
     public function show(UserAddress $userAddress)
     {
-        $userAddress = UserAddress::find($userAddress->id);
-        return response()->json($userAddress);
+        // $userAddress = UserAddress::find($userAddress->id);
+        // return response()->json($userAddress);
     }
 
     /**
@@ -74,19 +80,11 @@ class UserAddressController extends Controller
      */
     public function update(Request $request, UserAddress $userAddress)
     {
-        // if (UserAddress::find($userAddress->id)->user->id !== Auth::user()->id) {
-        //     return redirect()->route('unauthorized');
-        // }
-        $validator = Validator::make($request->all(), [
-            'address_line1' => 'required',
-            'address_line2' => 'required',
-            'delivery_id' => 'required',
-            'telephone' => 'required',
-            'mobile' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+        if (Auth::user()->role !== 3) {
+            return redirect()->route('unauthorized');
+        }
+        if (Auth::user()->role === 3 && $userAddress->user_id !== Auth::user()->id) {
+            return redirect()->route('unauthorized');
         }
 
         $userAddress = UserAddress::find($userAddress->id);
@@ -102,6 +100,13 @@ class UserAddressController extends Controller
      */
     public function destroy(UserAddress $userAddress)
     {
+        if (Auth::user()->role !== 3) {
+            return redirect()->route('unauthorized');
+        }
+        if (Auth::user()->role === 3 && $userAddress->user_id !== Auth::user()->id) {
+            return redirect()->route('unauthorized');
+        }
+
         return UserAddress::destroy($userAddress->id);
     }
 }
