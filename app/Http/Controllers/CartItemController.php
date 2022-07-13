@@ -56,7 +56,12 @@ class CartItemController extends Controller
             $item->quantity = $request->quantity +  $item->quantity;
             $item->save();
         } else {
-            $item = CartItem::create($request->all());
+            $item = CartItem::create([
+                'product_id' => $request->product_id,
+                'session_id' => Auth::user()->shoppingSession->id,
+                'inventory_id' => $request->inventory_id,
+                'quantity' => $request->quantity
+            ]);
         }
         return response()->json($item);
     }

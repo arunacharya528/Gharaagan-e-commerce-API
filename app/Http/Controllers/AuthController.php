@@ -67,7 +67,7 @@ class AuthController extends Controller
             if ($validateUser->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'validation error',
+                    'message' => 'There was problem logging into your account',
                     'errors' => $validateUser->errors()
                 ], 401);
             }
@@ -83,7 +83,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'role' => $user->role,
-                'message' => 'User Logged In Successfully',
+                'name' => $user->name,
                 'token' => $user->createToken("API TOKEN")->plainTextToken
             ], 200);
         } catch (\Throwable $th) {
