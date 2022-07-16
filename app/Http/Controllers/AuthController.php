@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Trait\AuthUserTrait;
 use App\Mail\Mailer;
 use App\Models\CartItem;
 use App\Models\Discount;
@@ -29,29 +30,43 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
+    use AuthUserTrait;
     public function registerClient(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validation = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users',
-            'password' => 'required',
+            'password' => [
+                'required',
+                'string',
+                Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised()
+            ],
             'contact' => 'required'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+        if ($validation->fails()) {
+            return response()->json($validation->errors()->all(), 400);
+        } else {
+            $pin = rand(100000, 999999);
+            $request['password'] = Hash::make($request->password);
+            $request['remember_token'] = $pin;
+            $request['role'] = 3;
+
+            $user = User::create($request->all());
+            $this->sendEmailForVerification($user, $pin);
+
+
+            ShoppingSession::create(['user_id' => $user->id]);
+            Email::create(['email' => $user->email]);
+            $user['token'] = $user->createToken("API TOKEN")->plainTextToken;
+            $user['email_verified_at'] = null;
+
+            return response()->json($user);
         }
-
-        $user = new User();
-        $user->name = $request->name;
-        $user->contact = $request->contact;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->save();
-
-        ShoppingSession::create(['user_id' => $user->id]);
-        Email::create(['email' => $user->email]);
-        return response()->json($user->with('hasNewsletter'));
     }
 
     public function login(Request $request)
@@ -138,15 +153,7 @@ class AuthController extends Controller
             'remember_token' => $pin
         ]);
 
-        $subject = "Email verification";
-        $body = <<<EOD
-        Dear $user->name,<br>
-        <p>$pin is the pin code to verify your email</p>
-        With regards.
-        EOD;
-        $mailable = new Mailer($subject, $body);
-        Mail::to(Auth::user()->email)->send($mailable);
-
+        $this->sendEmailForVerification($user, $pin);
         return response()->json($user);
     }
 
@@ -157,15 +164,7 @@ class AuthController extends Controller
         $user->update([
             'remember_token' => $pin
         ]);
-
-        $subject = "Email verification";
-        $body = <<<EOD
-        Dear $user->name,<br>
-        <p><u>$pin</u> is the pin code to verify your email</p>
-        With regards.
-        EOD;
-        $mailable = new Mailer($subject, $body);
-        Mail::to(Auth::user()->email)->send($mailable);
+        $this->sendEmailForVerification($user, $pin);
 
         return response()->json('verification link sent');
     }
