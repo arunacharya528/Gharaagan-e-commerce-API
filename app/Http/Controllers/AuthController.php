@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rules\Password;
 use Laravel\Passport\Bridge\RefreshTokenRepository;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -116,6 +117,99 @@ class AuthController extends Controller
     //  All methods to be required in client side
     //
     //===============================================
+
+    public function updateInfo(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+        $user->update([
+            'name' => $request->name,
+            'contact' => $request->contact
+        ]);
+        return response()->json($user);
+    }
+
+    public function updateEmail(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+        $pin = rand(100000, 999999);
+        $user->update([
+            'email' => $request->email,
+            'email_verified_at' => null,
+            'remember_token' => $pin
+        ]);
+
+        $subject = "Email verification";
+        $body = <<<EOD
+        Dear $user->name,<br>
+        <p>$pin is the pin code to verify your email</p>
+        With regards.
+        EOD;
+        $mailable = new Mailer($subject, $body);
+        Mail::to(Auth::user()->email)->send($mailable);
+
+        return response()->json($user);
+    }
+
+    public function sendVerificationEmail(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+        $pin = rand(100000, 999999);
+        $user->update([
+            'remember_token' => $pin
+        ]);
+
+        $subject = "Email verification";
+        $body = <<<EOD
+        Dear $user->name,<br>
+        <p><u>$pin</u> is the pin code to verify your email</p>
+        With regards.
+        EOD;
+        $mailable = new Mailer($subject, $body);
+        Mail::to(Auth::user()->email)->send($mailable);
+
+        return response()->json('verification link sent');
+    }
+
+    public function verifyEmail(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+        if ($user->remember_token === $request->verificationPin) {
+            $user->update([
+                'email_verified_at' => date("Y-m-d H:i:s", strtotime('now'))
+            ]);
+            return response()->json($user);
+        }
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $validation = Validator::make(
+            [
+                'password' => $request->password
+            ],
+            [
+                'password' => [
+                    'required',
+                    'string',
+                    Password::min(8)
+                        ->mixedCase()
+                        ->numbers()
+                        ->symbols()
+                        ->uncompromised()
+                ]
+            ]
+        );
+
+        if ($validation->fails()) {
+            return response()->json($validation->errors()->all(), 400);
+        } else {
+            $user = User::find(Auth::user()->id);
+            $user->update([
+                'password' => Hash::make($request->password)
+            ]);
+            return response()->json($user);
+        }
+    }
 
     public function getSession()
     {
@@ -278,7 +372,7 @@ class AuthController extends Controller
             $mailable->setAttachment($pdf->output(), 'demo.pdf', [
                 'mime' => 'application/pdf',
             ]);
-            Mail::to("acharyaumesh742@gmail.com")->send($mailable);
+            Mail::to(Auth::user()->email)->send($mailable);
         } catch (\Throwable $th) {
             error_log($th->getMessage());
             DB::rollBack();

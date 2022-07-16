@@ -14,6 +14,8 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(10)->create();
+        User::factory(10)->create([
+            'email_verified_at' => null
+        ]);
     }
 }

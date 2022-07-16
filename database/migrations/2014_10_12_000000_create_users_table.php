@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('contact');
             $table->enum('role', [1, 2, 3])->default(1);
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

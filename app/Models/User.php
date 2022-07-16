@@ -22,7 +22,9 @@ class User extends Authenticatable
         'password',
         'name',
         'contact',
-        'role'
+        'role',
+        "email_verified_at",
+        'remember_token'
     ];
 
     /**
@@ -31,11 +33,13 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password'
+        'password',
+        'remember_token'
     ];
 
     protected $casts = [
-        'role' => 'int'
+        'role' => 'int',
+        'email_verified_at' => 'datetime',
     ];
 
     public function shoppingSession()

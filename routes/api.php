@@ -83,13 +83,21 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('pageLink', PageLinkController::class); //done
     Route::resource("siteDetail", SiteDetailController::class); //done
 
-    Route::get('user/session', [AuthController::class, 'getSession']); //done
-    Route::get('user/orders', [AuthController::class, 'getOrderDetail']); //done
-    Route::get('user/ratings', [AuthController::class, 'getRatings']); //done
-    Route::get('user/questionAnswers', [AuthController::class, 'getQuestionAnswers']); //done
-    Route::get('user/addresses', [AuthController::class, 'getAddresses']); //done
-    Route::get('user/wishlist', [AuthController::class, 'getWishList']); //done
-    Route::post('user/checkout', [AuthController::class, 'checkout']); //done
+    Route::post('email/sendVerificationNotification', [AuthController::class, 'sendVerificationEmail']);
+    Route::post('email/verify', [AuthController::class, 'verifyEmail']);
+
+    Route::group(['middleware' => 'verified'], function () {
+        Route::get('user/session', [AuthController::class, 'getSession']); //done
+        Route::get('user/orders', [AuthController::class, 'getOrderDetail']); //done
+        Route::get('user/ratings', [AuthController::class, 'getRatings']); //done
+        Route::get('user/questionAnswers', [AuthController::class, 'getQuestionAnswers']); //done
+        Route::get('user/addresses', [AuthController::class, 'getAddresses']); //done
+        Route::get('user/wishlist', [AuthController::class, 'getWishList']); //done
+        Route::post('user/checkout', [AuthController::class, 'checkout']); //done
+        Route::post('user/updateInfo', [AuthController::class, 'updateInfo']);
+        Route::post('user/updateEmail', [AuthController::class, 'updateEmail']);
+        Route::post('user/updatePassword', [AuthController::class, 'updatePassword']);
+    });
 
     Route::resource('advertisement', AdvertisementController::class); //done
     Route::get('discount/{discountName}/find', [DiscountController::class, 'findDiscount']); //done
@@ -99,11 +107,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('user', UserController::class); //done
     Route::resource('userAddress', UserAddressController::class); //disintegrate and allow for auth user only
     Route::resource('shoppingSession', ShoppingSessionController::class); //done
-    Route::resource('cartItem', CartItemController::class);//donw
+    Route::resource('cartItem', CartItemController::class); //donw
 
-    Route::delete('orderDetail/{orderDetail}/cancel', [OrderDetailController::class, 'cancelOrder']);//donw
-    Route::get("/orderDetail/{orderDetail}/invoice", [OrderDetailController::class, 'streamInvoice']);//donw
-    Route::resource('orderDetail', OrderDetailController::class);//donw
+    Route::delete('orderDetail/{orderDetail}/cancel', [OrderDetailController::class, 'cancelOrder']); //donw
+    Route::get("/orderDetail/{orderDetail}/invoice", [OrderDetailController::class, 'streamInvoice']); //donw
+    Route::resource('orderDetail', OrderDetailController::class); //donw
 
     // Route::resource('orderItem', OrderItemController::class);
     Route::resource('productRating', ProductRatingController::class); //done
@@ -111,9 +119,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('questionAnswer', QuestionAnswerController::class);
     Route::resource('productImage', ProductImageController::class); //done
     Route::resource('file', FileController::class); //done
-    Route::resource('wishlist', WishlistController::class);//done
+    Route::resource('wishlist', WishlistController::class); //done
     Route::resource('newsletter', EmailController::class); //done
-    Route::resource('delivery', DeliveryController::class);//done
+    Route::resource('delivery', DeliveryController::class); //done
 
     Route::get('logout', [AuthController::class, 'logout']);
 });
