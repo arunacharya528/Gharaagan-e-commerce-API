@@ -23,6 +23,7 @@ use App\Http\Controllers\SiteDetailController;
 use App\Http\Controllers\UserAddressController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -60,8 +61,17 @@ Route::post('/newsletter/conditionalSubscribe', [EmailController::class, 'create
 Route::get('/maintainance', function () {
     return response()->json(app()->isDownForMaintenance());
 });
+
 Route::post("/register", [AuthController::class, 'registerClient']); //done
 Route::post("/login", [AuthController::class, 'login'])->name('login'); //done
+
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('guest');
+Route::get('/reset-password', function (Request $request) {
+    return redirect(env('CLIENT_SITE_ADDRESS') . "/password-reset?token=$request->token&email=$request->email");
+})->middleware('guest')->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+
+
 Route::post("/get-if-logged-in", [AuthController::class, 'getIfLoggedIn']);
 Route::get('unauthorized', function () {
     return response()->json([

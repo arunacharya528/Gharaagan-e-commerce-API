@@ -17,6 +17,7 @@ use App\Models\UserAddress;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,9 +25,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password as FacadesPassword;
 use Illuminate\Validation\Rules\Password;
 use Laravel\Passport\Bridge\RefreshTokenRepository;
 use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -126,13 +129,6 @@ class AuthController extends Controller
         return response()->json(['message' => 'Logged out successfully']);
     }
 
-
-    //===============================================
-    //
-    //  All methods to be required in client side
-    //
-    //===============================================
-
     public function updateInfo(Request $request)
     {
         $user = User::find(Auth::user()->id);
@@ -210,6 +206,54 @@ class AuthController extends Controller
         }
     }
 
+    public function forgotPassword(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $status = FacadesPassword::sendResetLink(
+            $request->only('email')
+        );
+
+        return $status === FacadesPassword::RESET_LINK_SENT
+            ? response()->json("Reset link sent")
+            : response()->json(__($status), 400);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        if ($validation->fails()) {
+            return response()->json($validation->errors()->all(), 400);
+        } else {
+
+            $status = FacadesPassword::reset(
+                $request->only('email', 'password', 'password_confirmation', 'token'),
+                function ($user, $password) {
+                    $user->forceFill([
+                        'password' => Hash::make($password)
+                    ])->setRememberToken(Str::random(60));
+
+                    $user->save();
+
+                    event(new PasswordReset($user));
+                }
+            );
+
+            return $status === FacadesPassword::PASSWORD_RESET
+                ? response()->json("Password was successfully reset")
+                : response()->json([__($status)], 400);
+        }
+    }
+    //===============================================
+    //
+    //  All methods to be required in client side
+    //
+    //===============================================
     public function getSession()
     {
         if (Auth::user()->role !== 3) {
