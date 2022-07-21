@@ -20,10 +20,9 @@ class AdvertisementFactory extends Factory
             'name' => $this->faker->word(),
             'summary' => $this->faker->paragraph(5),
             'url_slug' => "https://www.google.com/search?q=" . $this->faker->word(),
-            'page' => $this->faker->randomElement(['home', 'detail', 'filter', 'profile']),
-            'type' => $this->faker->randomElement(['banner', 'promotion', 'category']),
+            'type' => $this->faker->randomElement(['banner', 'promotion', 'category', 'sidebar']),
             'active' => $this->faker->randomElement([true, false]),
-            'file_id'=>$this->faker->randomElement(File::pluck('id')),
+            'file_id' => $this->faker->randomElement(File::pluck('id')),
             'active_from' => date('Y-m-d H:i:s', $currentDate),
             'active_to' => date('Y-m-d H:i:s', $futureDate),
         ];

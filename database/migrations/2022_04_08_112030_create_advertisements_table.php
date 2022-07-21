@@ -18,7 +18,6 @@ class CreateAdvertisementsTable extends Migration
             $table->string('name');
             $table->text('summary');
             $table->string('url_slug');
-            $table->string('page');
             $table->string('type');
             $table->boolean('active');
             $table->unsignedBigInteger('file_id')->nullable();
