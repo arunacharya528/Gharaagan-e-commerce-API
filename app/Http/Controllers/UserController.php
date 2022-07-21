@@ -18,7 +18,7 @@ class UserController extends Controller
         if (Auth::user()->role !== 1) {
             return redirect()->route('unauthorized');
         }
-        $user = User::withCount('hasNewsletter')->get();
+        $user = User::get();
         return response()->json($user);
     }
 
