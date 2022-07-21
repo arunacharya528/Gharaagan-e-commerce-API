@@ -7,23 +7,19 @@
                 </td>
             </tr>
             <tr>
-                <td style="width: 100%">
-                    <div class="social-line">
-                        <a href="http://facebook.com" target="_blank">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/800px-Facebook_Logo_%282019%29.png"
-                                alt="facebook logo" />
-                        </a>
+                <td style="width: 100%; padding:1rem 0;">
+                    @php
+                        $socialLinks = App\Models\SiteDetail::where('name', 'social_links')->first()->value;
+                        $socialLinks = json_decode($socialLinks, true);
+                    @endphp
 
-                        <a href="http://instagram.com" target="_blank">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Instagram-Icon.png/640px-Instagram-Icon.png"
-                                alt="instagram logo" />
+                    @foreach ($socialLinks as $link)
+                        <a href="{{ $link['path'] }}" target="_blank" title="{{ $link['name'] }}" style="padding: 0 0.5rem;">
+                            @php
+                                echo $link['svg'];
+                            @endphp
                         </a>
-
-                        <a href="http://twitter.com" target="_blank">
-                            <img src="https://upload.wikimedia.org/wikipedia/fr/thumb/c/c8/Twitter_Bird.svg/langfr-280px-Twitter_Bird.svg.png"
-                                alt="twitter logo" />
-                        </a>
-                    </div>
+                    @endforeach
                 </td>
             </tr>
         </table>
