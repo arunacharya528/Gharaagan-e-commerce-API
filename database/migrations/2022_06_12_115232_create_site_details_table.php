@@ -28,15 +28,15 @@ class CreateSiteDetailsTable extends Migration
             ],
             [
                 'name' => 'logo_url',
-                'value' => url("/") . "/storage/asset/image/logo.png"
+                'value' => url("/") . "https://www.dropbox.com/s/zsc8uo5nsdnbzji/logo%20100x100.png?raw=1"
             ],
             [
                 'name' => 'lg_logo_url',
-                'value' => url("/") . "/storage/asset/image/lg-logo.png"
+                'value' => url("/") . "https://www.dropbox.com/s/cfz9yxge2u5svmk/lg-logo%20200x100.png?raw=1"
             ],
             [
                 'name' => 'notification',
-                'value' => "This is a simple notification message"
+                'value' => ""
             ],
             [
                 'name' => 'social_links',
