@@ -31,7 +31,8 @@ class ProductController extends Controller
             'images',
             'ratings',
             'brand'
-        ])
+        ])->withAvg('ratings', 'rate')
+            ->orderBy('created_at', 'desc')
             ->get();
         return response()->json($products);
     }
@@ -59,7 +60,6 @@ class ProductController extends Controller
         if (Auth::user()->role === 3) {
             return redirect(route('unauthorized'));
         } else {
-            $request['SKU'] = Str::uuid();
             $product = Product::create($request->all());
             return response()->json($product);
         }
@@ -83,6 +83,10 @@ class ProductController extends Controller
                 $query->with('user')->orderBy('created_at', 'desc');
             }
         ])
+            ->withAvg('ratings', 'rate')
+            ->withCount('wishList')
+            ->withCount('ratings')
+            ->withCount('questionAnswers')
             ->find($product->id);
         return response()->json($product);
     }
