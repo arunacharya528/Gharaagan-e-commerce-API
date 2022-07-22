@@ -27,6 +27,7 @@ class ShoppingSessionController extends Controller
         }
         $session = ShoppingSession::with([
             'cartItems.product',
+            'cartItems.inventory',
             'user'
         ])->orderBy('updated_at', 'desc')->get();
         return response()->json($session);
