@@ -48,7 +48,8 @@ class CreateUsersTable extends Migration
                 'email' => "client@gharagan.com",
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
                 'contact' => "123456789",
-                'role' => 3
+                'role' => 3,
+                'email_verified_at' => "2022-07-23 00:00:00"
             ],
 
         ];
