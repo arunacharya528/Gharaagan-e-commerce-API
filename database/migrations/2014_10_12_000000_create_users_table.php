@@ -32,7 +32,8 @@ class CreateUsersTable extends Migration
                 'email' => "superadmin@gharagan.com",
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
                 'contact' => "123456789",
-                'role' => 1
+                'role' => 1,
+                'email_verified_at' => date('Y-m-d H:i:s')
             ],
 
             [
@@ -40,7 +41,8 @@ class CreateUsersTable extends Migration
                 'email' => "admin@gharagan.com",
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
                 'contact' => "123456789",
-                'role' => 2
+                'role' => 2,
+                'email_verified_at' => date('Y-m-d H:i:s')
             ],
 
             [
@@ -49,7 +51,7 @@ class CreateUsersTable extends Migration
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
                 'contact' => "123456789",
                 'role' => 3,
-                'email_verified_at' => "2022-07-23 00:00:00"
+                'email_verified_at'=> date('Y-m-d H:i:s')
             ],
 
         ];
