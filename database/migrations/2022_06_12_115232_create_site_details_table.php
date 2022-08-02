@@ -27,6 +27,14 @@ class CreateSiteDetailsTable extends Migration
                 'value' => '<div>Gharagan</div><div>Location</div><div>Address</div>'
             ],
             [
+                'name' => 'contact',
+                'value' => '9849XXXXXX,9845XXXXXX'
+            ],
+            [
+                'name' => 'email',
+                'value' => 'admin@gharagan.com'
+            ],
+            [
                 'name' => 'logo_url',
                 'value' => "https://www.dropbox.com/s/zsc8uo5nsdnbzji/logo%20100x100.png?raw=1"
             ],

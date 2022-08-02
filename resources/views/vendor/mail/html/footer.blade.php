@@ -14,11 +14,7 @@
                     @endphp
 
                     @foreach ($socialLinks as $link)
-                        <a href="{{ $link['path'] }}" target="_blank" title="{{ $link['name'] }}" style="padding: 0 0.5rem;">
-                            @php
-                                echo $link['svg'];
-                            @endphp
-                        </a>
+                        <a href="{{$link['path']}}" target="_blank" >{{$link['path']}}</a>
                     @endforeach
                 </td>
             </tr>

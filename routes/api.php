@@ -55,9 +55,9 @@ Route::get("/allBrand", [BrandController::class, 'index']); //done
 Route::get("/oneBrand/{brand}", [BrandController::class, 'show']); //done
 Route::get('/activeAds', [AdvertisementController::class, 'activeAdvertisement']); //done
 Route::get("/allSiteDetail", [SiteDetailController::class, 'index']); //done
-Route::get("/allPageLinks", [PageLinkController::class, 'index']); //done
-Route::get("/page/bySlug/{slug}", [PageController::class, 'showBySlug']); //done
-Route::post('/newsletter/conditionalSubscribe', [EmailController::class, 'createConditionally']); //done
+// Route::get("/allPageLinks", [PageLinkController::class, 'index']); //done
+// Route::get("/page/bySlug/{slug}", [PageController::class, 'showBySlug']); //done
+// Route::post('/newsletter/conditionalSubscribe', [EmailController::class, 'createConditionally']); //done
 Route::get('/maintainance', function () {
     return response()->json(app()->isDownForMaintenance());
 });
@@ -89,8 +89,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('product', ProductController::class); //done
     Route::resource('productCategory', ProductCategoryController::class); //done
     Route::resource('brand', BrandController::class); //done
-    Route::resource('page', PageController::class); //done
-    Route::resource('pageLink', PageLinkController::class); //done
+    // Route::resource('page', PageController::class); //done
+    // Route::resource('pageLink', PageLinkController::class); //done
     Route::resource("siteDetail", SiteDetailController::class); //done
 
     Route::post('email/sendVerificationNotification', [AuthController::class, 'sendVerificationEmail']);
@@ -130,7 +130,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('productImage', ProductImageController::class); //done
     Route::resource('file', FileController::class); //done
     Route::resource('wishlist', WishlistController::class); //done
-    Route::resource('newsletter', EmailController::class); //done
+    // Route::resource('newsletter', EmailController::class); //done
     Route::resource('delivery', DeliveryController::class); //done
 
     Route::get('logout', [AuthController::class, 'logout']);
