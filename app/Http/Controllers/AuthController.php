@@ -387,7 +387,7 @@ class AuthController extends Controller
                     $inventory->quantity = $inventory->quantity - $item->quantity;
                     $inventory->save();
                 } else {
-                    throw new Exception("Requested quantity of $item->product is unavailable.");
+                    throw new Exception("Requested quantity of " . $item->product->name . " is unavailable.");
                 }
             }
 
@@ -410,7 +410,7 @@ class AuthController extends Controller
             $pdf = Pdf::loadView('invoice', ['orderDetail' => $order])->setPaper('a4', 'landscape');
 
             $subject = 'Gharagan Invoice of order #' . $order->id;
-            $body = "Invoice of gharagan order. The content of this bill may change over time. It is advised to keep this mail as a proop of purchase in this site.";
+            $body = "Invoice of gharagan order. The content of this bill may change over time. It is advised to keep this mail as a proof of purchase in this site.";
             $mailable = new Mailer($subject, $body);
             $mailable->setAttachment($pdf->output(), 'demo.pdf', [
                 'mime' => 'application/pdf',
