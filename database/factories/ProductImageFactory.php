@@ -16,7 +16,8 @@ class ProductImageFactory extends Factory
     public function definition()
     {
         $fileId = $this->faker->randomElement(File::pluck('id'));
-        $imageURL = $this->faker->imageUrl();
+        $images = ['animals', 'arch', 'nature', 'people', 'tech'];
+        $imageURL = "https://placeimg.com/1000/700/" . $this->faker->randomElement($images);
         $data =  [
             'product_id' => $this->faker->randomElement(Product::pluck('id')),
         ];

@@ -14,13 +14,10 @@ class BrandFactory extends Factory
      */
     public function definition()
     {
-        // return [
-        //     'name'=>$this->faker->word(),
-        //     'image'=>$this->faker->imageUrl()
-        // ];
 
         $fileId = $this->faker->randomElement(File::pluck('id'));
-        $imageURL = $this->faker->imageUrl();
+        $images = ['animals', 'arch', 'nature', 'people', 'tech'];
+        $imageURL = "https://placeimg.com/1000/700/" . $this->faker->randomElement($images);
 
         $data =  ['name' => $this->faker->word()];
 
