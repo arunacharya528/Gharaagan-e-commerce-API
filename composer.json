@@ -13,8 +13,9 @@
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
+        "phpunit/phpunit": "^9.5.10",
         "ramsey/uuid": "^4.3",
-        "phpunit/phpunit": "^9.5.10"
+        "spatie/laravel-backup": "*"
     },
     "require-dev": {
         "brianium/paratest": "^6.5",
