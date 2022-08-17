@@ -21,8 +21,7 @@ class QuestionAnswerController extends Controller
         $qas = QuestionAnswer::with([
             'user',
             'product'
-        ])
-            ->orderBy('updated_at', 'desc')->get();
+        ])->orderBy('created_at', 'desc')->get();
         return response()->json($qas);
     }
 

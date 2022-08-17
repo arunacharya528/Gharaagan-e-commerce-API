@@ -31,7 +31,7 @@ class OrderDetailController extends Controller
             'user',
             'address',
             'discount'
-        ])->get();
+        ])->orderBy('created_at','desc')->get();
         return response()->json($order);
     }
 
