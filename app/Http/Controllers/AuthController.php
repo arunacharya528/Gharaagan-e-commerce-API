@@ -326,7 +326,8 @@ class AuthController extends Controller
                     'inventories.discount',
                     'images.file',
                     'brand'
-                )->withAvg('ratings', 'rate');
+                )->withAvg('ratings', 'rate')
+                    ->where('published', true);
             }
         ])->find(Auth::user()->id);
         return response()->json($user->wishlist);

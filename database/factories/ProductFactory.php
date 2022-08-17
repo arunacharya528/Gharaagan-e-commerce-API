@@ -58,6 +58,7 @@ class ProductFactory extends Factory
             'summary' => $this->faker->sentence(),
             'category_id' => $this->faker->randomElement(ProductCategory::pluck('id')),
             'brand_id' => $this->faker->randomElement(Brand::pluck('id')),
+            'published' => $this->faker->randomElement([true, false])
         ];
     }
 }

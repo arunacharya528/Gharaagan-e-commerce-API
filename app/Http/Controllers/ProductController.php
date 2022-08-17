@@ -25,6 +25,9 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+        if (Auth::user()->role === 3) {
+            return redirect(route('unauthorized'));
+        }
         $products = Product::with([
             'category',
             'inventories',
@@ -239,7 +242,7 @@ class ProductController extends Controller
                 $products->orderBy('ratings_avg_rate', $order);
             }
 
-            $this->allProducts = $products->get();
+            $this->allProducts = $products->where('published', true)->get();
         }
 
         return response()->json($this->allProducts);
