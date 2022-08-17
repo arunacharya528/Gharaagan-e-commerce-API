@@ -190,7 +190,7 @@ class ProductController extends Controller
             $products = Product::whereIn('category_id', $categories->toArray())->with($withArray);
             $products = $sortByPrice($products);
             $products = $products->withAvg('ratings', 'rate')->orderBy('ratings_avg_rate', 'desc');
-            $this->allProducts = $products->get();
+            $this->allProducts = $products->where('published', true)->get();
         } else {
             $products = new Product();
 
@@ -202,7 +202,7 @@ class ProductController extends Controller
             $products = $sortByPrice($products);
 
             // filter by name
-            if ($request->exists('name')) {
+            if ($request->exists('name') && $request->input('name') != "") {
                 $products = $products->where('name', 'like', "%" . $request->input('name') . "%");
             }
 

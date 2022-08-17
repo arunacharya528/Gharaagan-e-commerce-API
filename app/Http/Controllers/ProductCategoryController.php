@@ -32,7 +32,7 @@ class ProductCategoryController extends Controller
             if ($category->is_parent == true) {
                 foreach ($category->childCategories as $childCategory) {
 
-                    $numberOfProducts = $childCategory->products->count();
+                    $numberOfProducts = $childCategory->products->where('published', true)->count();
                     // on each child category get the available number of products
                     $childCategory['number_of_product'] = $numberOfProducts;
                     $totalProducts += $numberOfProducts;

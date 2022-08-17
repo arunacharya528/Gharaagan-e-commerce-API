@@ -26,7 +26,7 @@ class BrandController extends Controller
     {
         $brands = Brand::with(['file', 'products'])->get();
         foreach ($brands as $brand) {
-            $brand['number_of_products'] = $brand->products->count();
+            $brand['number_of_products'] = $brand->products->where("published", true)->count();
             unset($brand->products);
         }
         return response()->json($brands);

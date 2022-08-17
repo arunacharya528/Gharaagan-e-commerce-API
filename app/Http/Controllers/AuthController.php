@@ -326,10 +326,10 @@ class AuthController extends Controller
                     'inventories.discount',
                     'images.file',
                     'brand'
-                )->withAvg('ratings', 'rate')
-                    ->where('published', true);
+                )->withAvg('ratings', 'rate');
             }
         ])->find(Auth::user()->id);
+
         return response()->json($user->wishlist);
     }
 
