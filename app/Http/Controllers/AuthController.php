@@ -113,8 +113,12 @@ class AuthController extends Controller
     public function getIfLoggedIn(Request $request)
     {
         $token = PersonalAccessToken::findToken($request->input('token'));
-        if ($token) {
-            return response()->json($token->tokenable);
+        $expiryTimestamp  = $token->created_at->addMinutes(config('sanctum.expiration'))->timestamp;
+        $currentTimestamp = strtotime(date('Y-m-d h:i:s'));
+
+        if ($token && $expiryTimestamp >= $currentTimestamp) {
+            $user = $token->tokenable;
+            return response()->json($user);
         } else {
             return response("Unauthorized", 404);
         }
