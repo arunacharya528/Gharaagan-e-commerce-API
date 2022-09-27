@@ -46,7 +46,7 @@ class AuthController extends Controller
                     ->mixedCase()
                     ->numbers()
                     ->symbols()
-                    ->uncompromised()
+                    // ->uncompromised()
             ],
             'contact' => 'required'
         ]);
@@ -194,7 +194,7 @@ class AuthController extends Controller
                         ->mixedCase()
                         ->numbers()
                         ->symbols()
-                        ->uncompromised()
+                        // ->uncompromised()
                 ]
             ]
         );
